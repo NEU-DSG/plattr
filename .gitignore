@@ -1,0 +1,5 @@
+# Ignore the SQL dump file
+/requirements/drupal_tapas_full.sql
+
+# Ignore Vagrant created directory 
+/.vagrant
