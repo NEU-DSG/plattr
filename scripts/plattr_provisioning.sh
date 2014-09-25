@@ -64,7 +64,7 @@ cd /home/vagrant
 source /home/vagrant/.profile
 rvm pkg install libyaml
 rvm install ruby-2.0.0-p481
-rvm use ruby-2.0.0-p481
+rvm --default use ruby-2.0.0-p481
 source /home/vagrant/.rvm/scripts/rvm
 
 echo "Setting temporary git credentials"
@@ -74,11 +74,11 @@ git config --global user.email "change@me.com"
 echo "Configuring tapas_rails"
 cd /home/vagrant/tapas_rails
 gem install bundler 
-#bundle install 
-#rake db:migrate
-#rails g hydra:jetty 
-#rake jetty:config
-#rake db:test:prepare 
+bundle install 
+rake db:migrate
+rails g hydra:jetty 
+rake jetty:config
+rake db:test:prepare 
 
 echo "Starting Redis" 
 sudo service redis start 
@@ -112,7 +112,10 @@ sudo sed -i "s/memory_limit = 128M/memory_limit = 400M/g" /etc/php.ini
 
 echo "Setting up tapas" 
 echo "Configuring httpd.conf"
-sudo echo "Include /home/vagrant/requirements/tapas.conf" >> /etc/httpd/conf/httpd.conf
+# We need to override the `AllowOverride None` on DocumentRoot (/var/www/html). 
+# The `Include conf.d/*.conf` line in httpd.conf occurs before the directive, 
+# so any changes made to it that way fail.  
+echo "Include /home/vagrant/requirements/tapas.conf" | sudo tee --append /etc/httpd/conf/httpd.conf > /dev/null
 
 echo "Symlinking vagrant config files" 
 ln -s /var/www/html/tapas/sites/default/settings.vagrant.php /var/www/html/tapas/sites/default/settings.php 
@@ -128,6 +131,6 @@ mysql -u root --password='' --execute="set global max_allowed_packet=10000000000
 mysql --max_allowed_packet=2G -u root --password='' drupal_tapas < /vagrant/requirements/drupal_tapas_full.sql
 
 echo "Restarting necessary services"
-sudo service httpd restart 
+sudo service httpd restart
 sudo service memcached restart 
 sudo service mysqld restart 

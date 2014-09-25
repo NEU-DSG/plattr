@@ -42,7 +42,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # Runs configuration required to get the dummy application up and going so that 
   # we can test what we're doing. 
-  config.vm.provision "shell", path: "scripts/platter_provisioning.sh", privileged: false
+  config.vm.provision "shell", path: "scripts/plattr_provisioning.sh", privileged: false
 
   config.vm.synced_folder "requirements", "/home/vagrant/requirements", nfs: true
   config.vm.synced_folder "~/tapas_rails", "/home/vagrant/tapas_rails", nfs: true 
