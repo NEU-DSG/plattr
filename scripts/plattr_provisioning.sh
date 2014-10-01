@@ -79,6 +79,7 @@ rake db:migrate
 rails g hydra:jetty 
 rake jetty:config
 rake db:test:prepare 
+thor drupal_jetty:init
 
 echo "Starting Redis" 
 sudo service redis start 
@@ -95,8 +96,13 @@ echo "Installing Oh-My-Zsh"
 cd /home/vagrant 
 \curl -Lk http://install.ohmyz.sh | sh 
 sudo chsh -s /bin/zsh vagrant 
-full_path=`echo $PATH`
-echo "export PATH=$full_path" >> /home/vagrant/.zshrc
+# Set the default theme to something that doesn't try to load git
+# info on navigation; the tapas directory is large enough that this 
+# is incredibly slow 
+sed -i "s/ZSH_THEME=\"robbyrussell\"/ZSH_THEME=\"evan\"/g" /home/vagrant/.zshrc
+# Ensure rvm is available from .zshrc
+rvm get stable --auto-dotfiles
+rvm alias create default ruby-2.0.0-p481
 source /home/vagrant/.zshrc
 
 echo "Setting required services to auto start"
