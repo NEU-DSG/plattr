@@ -1,5 +1,9 @@
 # Ignore the SQL dump file
-/requirements/drupal_tapas_full.sql
+/requirements/drupal_tapas_minimal.sql
+
+# Ignore sublime project files
+*.sublime-project
+*.sublime-workspace
 
 # Ignore Vagrant created directory 
 /.vagrant
