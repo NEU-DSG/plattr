@@ -80,6 +80,7 @@ rails g hydra:jetty
 rake jetty:config
 rake db:test:prepare 
 thor drupal_jetty:init
+rake jetty:start
 
 echo "Starting Redis" 
 sudo service redis start 
@@ -134,7 +135,7 @@ mysql -u root --password='' --execute="CREATE DATABASE drupal_tapas;"
 # dumpfile. 
 mysql -u root --password='' --execute="set global net_buffer_length=100000000;"
 mysql -u root --password='' --execute="set global max_allowed_packet=100000000000;"
-mysql --max_allowed_packet=2G -u root --password='' drupal_tapas < /vagrant/requirements/drupal_tapas_full.sql
+mysql --max_allowed_packet=2G -u root --password='' drupal_tapas < /vagrant/requirements/drupal_tapas_minimal.sql
 
 echo "Restarting necessary services"
 sudo service httpd restart
