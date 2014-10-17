@@ -6,7 +6,7 @@ require "/home/vagrant/boris-loader/boris-loader.php";
 # bootstrap into Drupal environments.
 # See http://vvv.tobiassjosten.net/php/php-repl-for-symfony-and-drupal/ for 
 # details
-\Boris\Loader\Loader::load($boris, [
+\Boris\Loader\Loader::load($boris, array(
     new \Boris\Loader\Provider\Drupal7(),
     new \Boris\Loader\Provider\Drupal8()
-]);
+));

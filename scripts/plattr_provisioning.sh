@@ -142,7 +142,7 @@ echo "Installing boris and boris-loader (Drupal REPL)"
 cd /home/vagrant 
 git clone http://github.com/tobiassjosten/boris-loader 
 composer global require 'd11wtq/boris=*'
-cp /home/vagrant/requirements/.borisrc_base /home/vagrant/.borisrc 
+cp /home/vagrant/requirements/borisrc_base /home/vagrant/.borisrc 
 
 echo "Restarting necessary services"
 sudo service httpd restart
