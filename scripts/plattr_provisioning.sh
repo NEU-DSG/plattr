@@ -37,6 +37,7 @@ sudo yum install php-pecl-memcached --assumeyes
 sudo yum install php-pecl-apc --assumeyes 
 sudo yum install mysql-server --assumeyes 
 sudo yum install memcached --assumeyes 
+sudo yum install php-posix --assumeyes
 
 echo "Installing Git"
 wget https://www.kernel.org/pub/software/scm/git/git-1.8.2.3.tar.gz
@@ -136,6 +137,12 @@ mysql -u root --password='' --execute="CREATE DATABASE drupal_tapas;"
 mysql -u root --password='' --execute="set global net_buffer_length=100000000;"
 mysql -u root --password='' --execute="set global max_allowed_packet=100000000000;"
 mysql --max_allowed_packet=2G -u root --password='' drupal_tapas < /vagrant/requirements/drupal_tapas_minimal.sql
+
+echo "Installing boris and boris-loader (Drupal REPL)" 
+cd /home/vagrant 
+git clone http://github.com/tobiassjosten/boris-loader 
+composer global require 'd11wtq/boris=*'
+cp /home/vagrant/requirements/.borisrc_base /home/vagrant/.borisrc 
 
 echo "Restarting necessary services"
 sudo service httpd restart

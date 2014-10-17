@@ -1,0 +1,12 @@
+<?php
+
+require "/home/vagrant/boris-loader/boris-loader.php";
+
+# This code snippet is required to get boris to correctly 
+# bootstrap into Drupal environments.
+# See http://vvv.tobiassjosten.net/php/php-repl-for-symfony-and-drupal/ for 
+# details
+\Boris\Loader\Loader::load($boris, [
+    new \Boris\Loader\Provider\Drupal7(),
+    new \Boris\Loader\Provider\Drupal8()
+]);
