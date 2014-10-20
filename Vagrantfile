@@ -12,6 +12,14 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Every Vagrant virtual environment requires a box to build off of.
   config.vm.box = "chef/centos-6.5" 
 
+
+  # Caches yum packages to cut down on install time after the first 
+  # build.  Note that cached packages will be reused for any other 
+  # chef/centos-6.5 boxes.
+  if Vagrant.has_plugin?("vagrant-cachier")
+    config.cache.scope = :box
+  end
+
   # Forward default rails development server port
   config.vm.network :forwarded_port, guest: 3000, host: 3003, auto_correct: true
 
