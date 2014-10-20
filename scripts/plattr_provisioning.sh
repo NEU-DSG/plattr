@@ -38,6 +38,8 @@ sudo yum install php-pecl-apc --assumeyes
 sudo yum install mysql-server --assumeyes 
 sudo yum install memcached --assumeyes 
 sudo yum install php-posix --assumeyes
+sudo yum install php-gd --assumeyes 
+sudo yum install php-mbstring --assumeyes 
 
 echo "Installing Git"
 wget https://www.kernel.org/pub/software/scm/git/git-1.8.2.3.tar.gz
@@ -126,8 +128,26 @@ echo "Configuring httpd.conf"
 echo "Include /home/vagrant/requirements/tapas.conf" | sudo tee --append /etc/httpd/conf/httpd.conf > /dev/null
 
 echo "Symlinking vagrant config files" 
-ln -s /var/www/html/tapas/sites/default/settings.vagrant.php /var/www/html/tapas/sites/default/settings.php 
-ln -s /var/www/html/tapas/.htaccess.vagrant /var/www/html/tapas/.htaccess
+# Function for testing whether symlink already exists, or if an
+# actual config file exists at the symlink location.  
+# Overwrites symlinks, doesn't overwrite real files. 
+safeish_symlink(){
+	path=$1
+	target=$2
+
+	if [ -f $target ]; then
+		if [ -h $target ]; then 
+      ln -s -f $path $target
+		else 
+      echo "$target points at an actual file.  Aborting!"
+		fi 
+	else
+		ln -s $path $target 
+	fi
+}
+
+safeish_symlink /var/www/html/tapas/sites/default/settings.vagrant.php /var/www/html/tapas/sites/default/settings.php
+safeish_symlink /var/www/html/tapas/.htaccess.vagrant /var/www/html/tapas/.htaccess 
 
 echo "Creating and cloning database"
 sudo service mysqld start
@@ -142,7 +162,14 @@ echo "Installing boris and boris-loader (Drupal REPL)"
 cd /home/vagrant 
 git clone http://github.com/tobiassjosten/boris-loader 
 composer global require 'd11wtq/boris=*'
-cp /home/vagrant/requirements/borisrc_base /home/vagrant/.borisrc 
+cp /home/vagrant/requirements/borisrc_base /home/vagrant/.borisrc
+
+# Set the apache user's uid to mirror that of the user who owns the tapas/ 
+# nfs mounted directory.  Sorts out permissions well enough for the sake of 
+# a dev environment.
+# Note that this will not do anything if the uid of the apache user on the 
+# vagrant vm would conflict with a uid assigned to another user after the change.
+sudo usermod -u $1 apache 
 
 echo "Restarting necessary services"
 sudo service httpd restart

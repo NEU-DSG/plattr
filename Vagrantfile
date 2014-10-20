@@ -40,9 +40,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     vb.customize ["modifyvm", :id, "--natdnshostresolver1", "off"]
   end
 
-  # Runs configuration required to get the dummy application up and going so that 
-  # we can test what we're doing. 
-  config.vm.provision "shell", path: "scripts/plattr_provisioning.sh", privileged: false
+  ENV["USER_ID"] = Process.uid.to_s
+
+  config.vm.provision "shell" do |s| 
+    s.path = "scripts/plattr_provisioning.sh"
+    s.privileged = false
+    s.args = ["#{ENV['USER_ID']}"]
+  end
 
   config.vm.synced_folder "requirements", "/home/vagrant/requirements", nfs: true
   config.vm.synced_folder "~/tapas_rails", "/home/vagrant/tapas_rails", nfs: true 
