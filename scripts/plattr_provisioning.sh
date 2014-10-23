@@ -12,6 +12,7 @@ echo "Enabling EPEL and REMI repositories"
 sudo rpm -Uvh remi-release-6*.rpm epel-release-6*.rpm
 rm /home/vagrant/epel-release-6-8.noarch.rpm
 rm /home/vagrant/remi-release-6.rpm
+sudo sed -i 0,/enabled=0/{s/enabled=0/enabled=1/} /etc/yum.repos.d/remi.repo
 
 echo "Installing package dependencies"
 sudo yum install file-devel-5.04-15.el6.x86_64 --assumeyes
@@ -29,7 +30,7 @@ sudo yum install htop --assumeyes
 sudo yum install gcc gettext-devel expat-devel curl-devel zlib-devel openssl-devel perl-ExtUtils-CBuilder perl-ExtUtils-MakeMaker --assumeyes
 
 # PHP Drupal Package dependencies 
-sudo yum install php --assumeyes
+sudo yum install php-5.4.34 --assumeyes
 sudo yum install php-pdo --assumeyes 
 sudo yum install php-xml --assumeyes
 sudo yum install php-mysql --assumeyes 
@@ -39,7 +40,8 @@ sudo yum install mysql-server --assumeyes
 sudo yum install memcached --assumeyes 
 sudo yum install php-posix --assumeyes
 sudo yum install php-gd --assumeyes 
-sudo yum install php-mbstring --assumeyes 
+sudo yum install php-mbstring --assumeyes
+sudo yum install php-mysql --assumeyes 
 
 echo "Installing Git"
 wget https://www.kernel.org/pub/software/scm/git/git-1.8.2.3.tar.gz
@@ -83,6 +85,7 @@ rails g hydra:jetty
 rake jetty:config
 rake db:test:prepare 
 thor drupal_jetty:init
+thor tapas_rails:create_api_user
 rake jetty:start
 
 echo "Starting Redis" 
