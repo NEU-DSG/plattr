@@ -33,8 +33,7 @@ sudo yum install gcc gettext-devel expat-devel curl-devel zlib-devel openssl-dev
 # PHP Drupal Package dependencies 
 sudo yum install php-5.4.34 --assumeyes
 sudo yum install php-pdo --assumeyes 
-sudo yum install php-xml --assumeyes
-sudo yum install php-mysql --assumeyes 
+sudo yum install php-xml --assumeyes 
 sudo yum install php-pecl-memcached --assumeyes 
 sudo yum install php-pecl-apc --assumeyes 
 sudo yum install mysql-server --assumeyes 
@@ -42,6 +41,7 @@ sudo yum install memcached --assumeyes
 sudo yum install php-posix --assumeyes
 sudo yum install php-gd --assumeyes 
 sudo yum install php-mbstring --assumeyes 
+sudo yum install php-mysql --assumeyes
 
 echo "Installing Git"
 wget https://www.kernel.org/pub/software/scm/git/git-1.8.2.3.tar.gz
