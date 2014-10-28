@@ -79,6 +79,21 @@ cd /home/vagrant/tapas_rails
 gem install bundler 
 bundle install 
 rake db:migrate
+
+# rails g hydra:jetty attempts to wget down a zipfile from 
+# Github containing the entire tapas/jetty directory - because 
+# we are version locked to an old version of jetty and because 
+# the tagged zipfile we expect to exist no longer actually exists, 
+# this breaks UNLESS we wget down the proper zip into the tmp/ 
+# dir, where the generator checks before downloading anything.
+# Do this here.
+if [ -f "/home/vagrant/tapas_rails/tmp/new-solr-schema.zip" ]; then 
+	echo "new-solr-schema.zip already exists - skipping wget" 
+else 
+	loc='http://librarystaff.neu.edu/DRSzip/new-solr-schema.zip'
+	wget -P /home/vagrant/tapas_rails/tmp $loc
+fi 
+
 rails g hydra:jetty 
 rake jetty:config
 rake db:test:prepare 
