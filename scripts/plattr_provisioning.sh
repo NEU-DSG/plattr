@@ -12,6 +12,7 @@ echo "Enabling EPEL and REMI repositories"
 sudo rpm -Uvh remi-release-6*.rpm epel-release-6*.rpm
 rm /home/vagrant/epel-release-6-8.noarch.rpm
 rm /home/vagrant/remi-release-6.rpm
+sudo sed -i 0,/enabled=0/{s/enabled=0/enabled=1/} /etc/yum.repos.d/remi.repo
 
 echo "Installing package dependencies"
 sudo yum install java-1.8.0 --assumeyes
@@ -30,7 +31,7 @@ sudo yum install htop --assumeyes
 sudo yum install gcc gettext-devel expat-devel curl-devel zlib-devel openssl-devel perl-ExtUtils-CBuilder perl-ExtUtils-MakeMaker --assumeyes
 
 # PHP Drupal Package dependencies 
-sudo yum install php --assumeyes
+sudo yum install php-5.4.34 --assumeyes
 sudo yum install php-pdo --assumeyes 
 sudo yum install php-xml --assumeyes
 sudo yum install php-mysql --assumeyes 
