@@ -14,6 +14,7 @@ rm /home/vagrant/epel-release-6-8.noarch.rpm
 rm /home/vagrant/remi-release-6.rpm
 
 echo "Installing package dependencies"
+sudo yum install java-1.8.0 --assumeyes
 sudo yum install file-devel-5.04-15.el6.x86_64 --assumeyes
 sudo yum install file-libs-5.04-15.el6.x86_64 --assumeyes
 sudo yum install sqlite-devel-3.6.20-1.el6.x86_64 --assumeyes
@@ -98,6 +99,7 @@ rails g hydra:jetty
 rake jetty:config
 rake db:test:prepare 
 thor drupal_jetty:init
+rails g cerberus_core:exist --skip
 rake jetty:start
 
 echo "Starting Redis" 
