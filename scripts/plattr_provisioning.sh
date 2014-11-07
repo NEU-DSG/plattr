@@ -193,3 +193,8 @@ echo "Restarting necessary services"
 sudo service httpd restart
 sudo service memcached restart 
 sudo service mysqld restart 
+
+# Execute user specific provisioning script
+if [ -f /home/vagrant/requirements/local/local.sh ]; then 
+	sh /home/vagrant/requirements/local/local.sh
+fi
