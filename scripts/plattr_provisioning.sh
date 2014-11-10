@@ -2,17 +2,20 @@
 
 /bin/bash --login
 
-echo "Adding EPEL repository"
-wget http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
 
-echo "Adding REMI repository"
-wget http://rpms.famillecollet.com/enterprise/remi-release-6.rpm
+if ! yum repolist enabled | grep -q "remi"; then  
+  echo "Adding EPEL repository"
+  wget http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
 
-echo "Enabling EPEL and REMI repositories"
-sudo rpm -Uvh remi-release-6*.rpm epel-release-6*.rpm
-rm /home/vagrant/epel-release-6-8.noarch.rpm
-rm /home/vagrant/remi-release-6.rpm
-sudo sed -i 0,/enabled=0/{s/enabled=0/enabled=1/} /etc/yum.repos.d/remi.repo
+  echo "Adding REMI repository"
+  wget http://rpms.famillecollet.com/enterprise/remi-release-6.rpm
+
+  echo "Enabling EPEL and REMI repositories"
+  sudo rpm -Uvh remi-release-6*.rpm epel-release-6*.rpm
+  rm /home/vagrant/epel-release-6-8.noarch.rpm
+  rm /home/vagrant/remi-release-6.rpm
+  sudo sed -i 0,/enabled=0/{s/enabled=0/enabled=1/} /etc/yum.repos.d/remi.repo
+fi
 
 echo "Installing package dependencies"
 sudo yum install java-1.8.0 --assumeyes
@@ -43,34 +46,48 @@ sudo yum install php-gd --assumeyes
 sudo yum install php-mbstring --assumeyes 
 sudo yum install php-mysql --assumeyes
 
-echo "Installing Git"
-wget https://www.kernel.org/pub/software/scm/git/git-1.8.2.3.tar.gz
-tar xzvf git-1.8.2.3.tar.gz
-cd /home/vagrant/git-1.8.2.3
-make prefix=/usr/local all
-sudo make prefix=/usr/local install
-cd /home/vagrant
-rm git-1.8.2.3.tar.gz
-rm -rf /home/vagrant/git-1.8.2.3
+# Check if git is already installed
+git --version  >/dev/null 
+GIT_AVAILABLE=$?
 
-echo "Installing FITS"
-cd /home/vagrant
-curl -O https://fits.googlecode.com/files/fits-0.6.2.zip
-unzip fits-0.6.2.zip
-chmod +x /home/vagrant/fits-0.6.2/fits.sh
-sudo mv /home/vagrant/fits-0.6.2 /opt/fits-0.6.2
-echo 'PATH=$PATH:/opt/fits-0.6.2' >> /home/vagrant/.bashrc
-echo 'export PATH'  >> /home/vagrant/.bashrc
-source /home/vagrant/.bashrc
+if [ $GIT_AVAILABLE != 0 ]; then 
+  echo "Installing Git"
+  wget https://www.kernel.org/pub/software/scm/git/git-1.8.2.3.tar.gz
+  tar xzvf git-1.8.2.3.tar.gz
+  cd /home/vagrant/git-1.8.2.3
+  make prefix=/usr/local all
+  sudo make prefix=/usr/local install
+  cd /home/vagrant
+  rm git-1.8.2.3.tar.gz
+  rm -rf /home/vagrant/git-1.8.2.3
+fi
 
-echo "Installing RVM"
-cd /home/vagrant
-\curl -sSL https://get.rvm.io | bash
-source /home/vagrant/.profile
-rvm pkg install libyaml
-rvm install ruby-2.0.0-p481
-rvm --default use ruby-2.0.0-p481
-source /home/vagrant/.rvm/scripts/rvm
+if [ ! -d "/opt/fits-0.6.2" ]; then 
+  echo "Installing FITS"
+  cd /home/vagrant
+  curl -O https://fits.googlecode.com/files/fits-0.6.2.zip
+  unzip fits-0.6.2.zip
+  chmod +x /home/vagrant/fits-0.6.2/fits.sh
+  sudo mv /home/vagrant/fits-0.6.2 /opt/fits-0.6.2
+  echo 'PATH=$PATH:/opt/fits-0.6.2' >> /home/vagrant/.bashrc
+  echo 'export PATH'  >> /home/vagrant/.bashrc
+  source /home/vagrant/.bashrc
+fi
+
+# Check if RVM is already installed
+rvm --version >/dev/null 
+RVM_AVAILABLE=$?
+
+if ! $RVM_AVAILABLE; then 
+  echo "Installing RVM"
+  cd /home/vagrant
+  \curl -sSL https://get.rvm.io | bash
+  source /home/vagrant/.profile
+  rvm pkg install libyaml
+  rvm install ruby-2.0.0-p481
+  rvm --default use ruby-2.0.0-p481
+  source /home/vagrant/.rvm/scripts/rvm
+fi 
 
 echo "Setting temporary git credentials"
 git config --global user.name "Change Me" 
@@ -106,26 +123,28 @@ rake jetty:start
 echo "Starting Redis" 
 sudo service redis start 
 
-echo "Installing composer"
-curl -sS https://getcomposer.org/installer | php 
-sudo mv composer.phar /usr/local/bin/composer 
-export PATH=$PATH:/home/vagrant/.composer/vendor/bin
+if [ ! -d "/usr/local/bin/composer" ]; then 
+  echo "Installing composer"
+  curl -sS https://getcomposer.org/installer | php 
+  sudo mv composer.phar /usr/local/bin/composer 
+  export PATH=$PATH:/home/vagrant/.composer/vendor/bin
+  echo "Installing Drush"
+  composer global require "drush/drush:6.*"
+fi 
 
-echo "Installing Drush"
-composer global require "drush/drush:6.*"
-
-echo "Installing Oh-My-Zsh"
-cd /home/vagrant 
-\curl -Lk http://install.ohmyz.sh | sh 
-sudo chsh -s /bin/zsh vagrant 
-# Set the default theme to something that doesn't try to load git
-# info on navigation; the tapas directory is large enough that this 
-# is incredibly slow 
-sed -i "s/ZSH_THEME=\"robbyrussell\"/ZSH_THEME=\"evan\"/g" /home/vagrant/.zshrc
-# Ensure rvm is available from .zshrc
-rvm get stable --auto-dotfiles
-rvm alias create default ruby-2.0.0-p481
-source /home/vagrant/.zshrc
+if [ ! -d "/home/vagrant/.oh-my-zsh" ]; then 
+  echo "Installing Oh-My-Zsh"
+  cd /home/vagrant 
+  \curl -Lk http://install.ohmyz.sh | sh 
+  sudo chsh -s /bin/zsh vagrant 
+  # Set the default theme to something that doesn't try to load git
+  # info on navigation; the tapas directory is large enough that this 
+  # is incredibly slow 
+  sed -i "s/ZSH_THEME=\"robbyrussell\"/ZSH_THEME=\"evan\"/g" /home/vagrant/.zshrc
+  # Ensure rvm is available from .zshrc
+  rvm get stable --auto-dotfiles
+  rvm alias create default ruby-2.0.0-p481
+fi
 
 echo "Setting required services to auto start"
 sudo chkconfig redis on 
@@ -139,29 +158,33 @@ sudo sed -i "s/post_max_size = 8M/post_max_size = 50M/g" /etc/php.ini
 sudo sed -i "s/memory_limit = 128M/memory_limit = 400M/g" /etc/php.ini
 
 echo "Setting up tapas" 
-echo "Configuring httpd.conf"
 # We need to override the `AllowOverride None` on DocumentRoot (/var/www/html). 
 # The `Include conf.d/*.conf` line in httpd.conf occurs before the directive, 
 # so any changes made to it that way fail.  
-echo "Include /home/vagrant/requirements/tapas.conf" | sudo tee --append /etc/httpd/conf/httpd.conf > /dev/null
+tapas_conf="Include /home/vagrant/requirements/tapas.conf" 
+
+if ! grep -q $tapas_conf "/etc/httpd/conf/httpd.conf"; then 
+  echo "Configuring httpd.conf"
+  echo "Include /home/vagrant/requirements/tapas.conf" | sudo tee --append /etc/httpd/conf/httpd.conf > /dev/null
+fi
 
 echo "Symlinking vagrant config files" 
 # Function for testing whether symlink already exists, or if an
 # actual config file exists at the symlink location.  
 # Overwrites symlinks, doesn't overwrite real files. 
 safeish_symlink(){
-	path=$1
-	target=$2
+  path=$1
+  target=$2
 
-	if [ -f $target ]; then
-		if [ -h $target ]; then 
+  if [ -f $target ]; then
+    if [ -h $target ]; then 
       ln -s -f $path $target
-		else 
+    else 
       echo "$target points at an actual file.  Aborting!"
-		fi 
-	else
-		ln -s $path $target 
-	fi
+    fi 
+  else
+    ln -s $path $target 
+  fi
 }
 
 safeish_symlink /var/www/html/tapas/sites/default/settings.vagrant.php /var/www/html/tapas/sites/default/settings.php
@@ -169,18 +192,23 @@ safeish_symlink /var/www/html/tapas/.htaccess.vagrant /var/www/html/tapas/.htacc
 
 echo "Creating and cloning database"
 sudo service mysqld start
-mysql -u root --password='' --execute="CREATE DATABASE drupal_tapas;"
-# Configure mysql to handle the very large blobs of data in the sql 
-# dumpfile. 
-mysql -u root --password='' --execute="set global net_buffer_length=100000000;"
-mysql -u root --password='' --execute="set global max_allowed_packet=100000000000;"
-mysql --max_allowed_packet=2G -u root --password='' drupal_tapas < /vagrant/requirements/drupal_tapas_minimal.sql
+if ! mysql -u root -e "use drupal_tapas"; then 
+  mysql -u root --password='' --execute="CREATE DATABASE drupal_tapas;"
+  # Configure mysql to handle the very large blobs of data in the sql 
+  # dumpfile. 
+  mysql -u root --password='' --execute="set global net_buffer_length=100000000;"
+  mysql -u root --password='' --execute="set global max_allowed_packet=100000000000;"
+  mysql --max_allowed_packet=2G -u root --password='' drupal_tapas < /vagrant/requirements/drupal_tapas_minimal.sql
+fi
 
-echo "Installing boris and boris-loader (Drupal REPL)" 
+
 cd /home/vagrant 
-git clone http://github.com/tobiassjosten/boris-loader 
-composer global require 'd11wtq/boris=*'
-cp /home/vagrant/requirements/borisrc_base /home/vagrant/.borisrc
+if ! composer global show -i | grep -q "d11wtq/boris"; then 
+  echo "Installing boris and boris-loader (Drupal REPL)" 
+  git clone http://github.com/tobiassjosten/boris-loader 
+  composer global require 'd11wtq/boris=*'
+  cp /home/vagrant/requirements/borisrc_base /home/vagrant/.borisrc
+fi
 
 # Set the apache user's uid to mirror that of the user who owns the tapas/ 
 # nfs mounted directory.  Sorts out permissions well enough for the sake of 
@@ -196,5 +224,5 @@ sudo service mysqld restart
 
 # Execute user specific provisioning script
 if [ -f /home/vagrant/requirements/local/local.sh ]; then 
-	sh /home/vagrant/requirements/local/local.sh
+  sh /home/vagrant/requirements/local/local.sh
 fi
