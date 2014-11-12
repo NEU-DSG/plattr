@@ -1,6 +1,8 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby : 
 
+require 'yaml'
+
 # Vagrantfile API/syntax version.  Don't touch unless you know what you're doing! 
 VAGRANTFILE_API_VERSION = "2" 
 
@@ -12,6 +14,16 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Every Vagrant virtual environment requires a box to build off of.
   config.vm.box = "chef/centos-6.5" 
 
+  # Custom configuration goes here.
+  if File.exists?("requirements/local/vagrant_conf.yml")
+    custom_config = YAML.load(File.open("requirements/local/vagrant_conf.yml"))
+  else
+    custom_config = {} 
+  end
+
+  # Apply defaults 
+  custom_config["tapas_directory"] ||= "~/tapas"
+  custom_config["tapas_rails_directory"] ||= "~/tapas_rails"
 
   # Caches yum packages to cut down on install time after the first 
   # build.  Note that cached packages will be reused for any other 
@@ -57,8 +69,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
   config.vm.synced_folder "requirements", "/home/vagrant/requirements", nfs: true
-  config.vm.synced_folder "~/tapas_rails", "/home/vagrant/tapas_rails", nfs: true 
-  config.vm.synced_folder "~/tapas", "/var/www/html/tapas", nfs: true
+  config.vm.synced_folder custom_config["tapas_rails_directory"], "/home/vagrant/tapas_rails", nfs: true 
+  config.vm.synced_folder custom_config["tapas_directory"], "/var/www/html/tapas", nfs: true
 
   config.vm.network "private_network", ip: "192.168.3.6"
 end
