@@ -47,10 +47,7 @@ sudo yum install php-mbstring --assumeyes
 sudo yum install php-mysql --assumeyes
 
 # Check if git is already installed
-git --version  >/dev/null 
-GIT_AVAILABLE=$?
-
-if [ $GIT_AVAILABLE != 0 ]; then 
+if ! git --version &>1 >/dev/null; then 
   echo "Installing Git"
   wget https://www.kernel.org/pub/software/scm/git/git-1.8.2.3.tar.gz
   tar xzvf git-1.8.2.3.tar.gz
@@ -75,10 +72,7 @@ if [ ! -d "/opt/fits-0.6.2" ]; then
 fi
 
 # Check if RVM is already installed
-rvm --version >/dev/null 
-RVM_AVAILABLE=$?
-
-if ! $RVM_AVAILABLE; then 
+if ! rvm --version &>1 >/dev/null; then 
   echo "Installing RVM"
   cd /home/vagrant
   \curl -sSL https://get.rvm.io | bash
@@ -88,10 +82,6 @@ if ! $RVM_AVAILABLE; then
   rvm --default use ruby-2.0.0-p481
   source /home/vagrant/.rvm/scripts/rvm
 fi 
-
-echo "Setting temporary git credentials"
-git config --global user.name "Change Me" 
-git config --global user.email "change@me.com"
 
 echo "Configuring tapas_rails"
 cd /home/vagrant/tapas_rails
@@ -113,17 +103,25 @@ else
 	wget -P /home/vagrant/tapas_rails/tmp $loc
 fi 
 
-rails g hydra:jetty 
-rake jetty:config
+if [ ! -d /home/vagrant/tapas_rails/jetty ]; then 
+  rails g hydra:jetty 
+  rake jetty:config
+fi
+
 rake db:test:prepare 
 thor drupal_jetty:init
 rails g cerberus_core:exist --skip
-rake jetty:start
+
+# rake jetty:start throws an ugly/alarming error if called when the 
+# server is already running, so check first. 
+if rake jetty:status | grep -q "not running"; then 
+  rake jetty:start
+fi
 
 echo "Starting Redis" 
 sudo service redis start 
 
-if [ ! -d "/usr/local/bin/composer" ]; then 
+if [ ! -f "/usr/local/bin/composer" ]; then 
   echo "Installing composer"
   curl -sS https://getcomposer.org/installer | php 
   sudo mv composer.phar /usr/local/bin/composer 
@@ -163,9 +161,9 @@ echo "Setting up tapas"
 # so any changes made to it that way fail.  
 tapas_conf="Include /home/vagrant/requirements/tapas.conf" 
 
-if ! grep -q $tapas_conf "/etc/httpd/conf/httpd.conf"; then 
+if [ ! -f /etc/httpd/conf.d/tapas.conf ]; then 
   echo "Configuring httpd.conf"
-  echo "Include /home/vagrant/requirements/tapas.conf" | sudo tee --append /etc/httpd/conf/httpd.conf > /dev/null
+  sudo cp /home/vagrant/requirements/tapas.conf /etc/httpd/conf.d/
 fi
 
 echo "Symlinking vagrant config files" 
@@ -190,9 +188,9 @@ safeish_symlink(){
 safeish_symlink /var/www/html/tapas/sites/default/settings.vagrant.php /var/www/html/tapas/sites/default/settings.php
 safeish_symlink /var/www/html/tapas/.htaccess.vagrant /var/www/html/tapas/.htaccess 
 
-echo "Creating and cloning database"
 sudo service mysqld start
 if ! mysql -u root -e "use drupal_tapas"; then 
+  echo "Creating and cloning database"
   mysql -u root --password='' --execute="CREATE DATABASE drupal_tapas;"
   # Configure mysql to handle the very large blobs of data in the sql 
   # dumpfile. 
