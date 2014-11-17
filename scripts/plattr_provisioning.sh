@@ -160,10 +160,9 @@ echo "Setting up tapas"
 # The `Include conf.d/*.conf` line in httpd.conf occurs before the directive, 
 # so any changes made to it that way fail.  
 tapas_conf="Include /home/vagrant/requirements/tapas.conf" 
-
-if [ ! -f /etc/httpd/conf.d/tapas.conf ]; then 
+if ! grep -q $tapas_conf /etc/httpd/conf/httpd.conf; then  
   echo "Configuring httpd.conf"
-  sudo cp /home/vagrant/requirements/tapas.conf /etc/httpd/conf.d/
+  echo $tapas_conf | sudo tee --append  /etc/httpd/conf/httpd.conf >/dev/null
 fi
 
 echo "Symlinking vagrant config files" 
