@@ -11,3 +11,5 @@
 # Ignore the requirements/local directory, which is meant
 # to store user-specific configuration information 
 /requirements/local/
+
+**.swp
