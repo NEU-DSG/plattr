@@ -104,19 +104,25 @@ else
 fi 
 
 if [ ! -d /home/vagrant/tapas_rails/jetty ]; then 
-  rails g hydra:jetty 
+  rails g hydra:jetty
   rake jetty:config
 fi
 
 rake db:test:prepare 
 thor drupal_jetty:init
-rails g cerberus_core:exist --skip
+#rails g cerberus_core:exist --skip
+thor exist_jetty:init
 
 # rake jetty:start throws an ugly/alarming error if called when the 
 # server is already running, so check first. 
-if rake jetty:status | grep -q "not running"; then 
+if rake jetty:status | grep -q "Not running"; then 
   rake jetty:start
 fi
+# So that eXist works better out-of-the-box, set its admin password
+# and change its default database permissions.
+echo "Giving Jetty some time to start"
+sleep 25s # <--- might be able to reduce this?
+thor exist_jetty:set_permissions
 
 echo "Starting Redis" 
 sudo service redis start 
