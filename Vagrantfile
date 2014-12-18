@@ -12,7 +12,7 @@ VAGRANT_DEFAULT_PROVIDER = "vmware_fusion"
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config| 
 
   # Every Vagrant virtual environment requires a box to build off of.
-  config.vm.box = "chef/centos-6.5" 
+  config.vm.box = "neu_libraries/plattr" 
 
   # Custom configuration goes here.
   if File.exists?("requirements/local/vagrant_conf.yml")
