@@ -27,8 +27,12 @@ if [ ! -d /home/vagrant/tapas_rails/jetty ]; then
 fi
 
 rake db:test:prepare 
+
+if rake jetty:status | grep -q "^Running"; then 
+  rake jetty:stop 
+fi
+
 thor drupal_jetty:init
-#rails g cerberus_core:exist --skip
 thor exist_jetty:init
 
 # rake jetty:start throws an ugly/alarming error if called when the 
