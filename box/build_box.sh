@@ -121,6 +121,6 @@ if ! composer global show -i | grep -q "d11wtq/boris"; then
   echo "Installing boris and boris-loader (Drupal REPL)" 
   git clone http://github.com/tobiassjosten/boris-loader 
   composer global require 'd11wtq/boris=*'
-  cp /home/vagrant/borisrc_base /home/vagrant/.borisrc
+  cp /vagrant/borisrc_base /home/vagrant/.borisrc
 fi
 
