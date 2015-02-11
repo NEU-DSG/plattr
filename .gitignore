@@ -6,7 +6,7 @@
 *.sublime-workspace
 
 # Ignore Vagrant created directory 
-/.vagrant
+**.vagrant/
 
 # Ignore .box files created in the box directory
 **.box

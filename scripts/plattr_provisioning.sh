@@ -97,6 +97,7 @@ fi
 # a dev environment.
 # Note that this will not do anything if the uid of the apache user on the 
 # vagrant vm would conflict with a uid assigned to another user after the change.
+sudo service httpd stop 
 sudo usermod -u $1 apache 
 
 echo "Restarting necessary services"
