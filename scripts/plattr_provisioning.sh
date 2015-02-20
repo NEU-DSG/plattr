@@ -43,7 +43,7 @@ fi
 # So that eXist works better out-of-the-box, set its admin password
 # and change its default database permissions.
 echo "Giving Jetty some time to start"
-sleep 15s # <--- might be able to reduce this?
+sleep 20s
 thor exist_jetty:set_permissions
 
 echo "Starting Redis" 

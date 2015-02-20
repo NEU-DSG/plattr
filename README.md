@@ -17,3 +17,6 @@ Isn't fancy or interesting or even really a proper project.  It's just a Vagrant
     * The application.yml file goes into ~/tapas_rails/config/ 
 6. CD into the root directory of the project and run ``vagrant up``.  Be patient - installation takes time. 
 7. Type ``vagrant ssh`` and you should be ssh'd directly into the machine.  Since none of the components talk to each other (yet) this is everything you need to do.  Do note that the Rails server isn't actually running, and that if you need it for anything you'll need to go start it.  The tapas project should be accessible from your machine's browser at localhost:8080/tapas.  
+
+
+Then see http://github.com/NEU-DSG/tapas/wiki/Running-tapas,-tapas-rails,-and-eXist-in-the-development-environment
