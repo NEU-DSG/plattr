@@ -17,6 +17,7 @@ fi
 
 echo "Installing package dependencies"
 sudo yum install java-1.8.0 --assumeyes
+sudo yum install httpd-2.2.15 --assumeyes
 sudo yum install file-devel-5.04-15.el6.x86_64 --assumeyes
 sudo yum install file-libs-5.04-15.el6.x86_64 --assumeyes
 sudo yum install sqlite-devel-3.6.20-1.el6.x86_64 --assumeyes
@@ -32,7 +33,8 @@ sudo yum install htop --assumeyes
 sudo yum install gcc gettext-devel expat-devel curl-devel zlib-devel openssl-devel perl-ExtUtils-CBuilder perl-ExtUtils-MakeMaker --assumeyes
 
 # PHP Drupal Package dependencies 
-sudo yum install php-5.4.34 --assumeyes
+sudo yum install php-5.4.38 --assumeyes
+sudo yum install mod_php --assumeyes
 sudo yum install php-pdo --assumeyes 
 sudo yum install php-xml --assumeyes 
 sudo yum install php-pecl-memcached --assumeyes 
