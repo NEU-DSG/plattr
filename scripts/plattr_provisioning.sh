@@ -33,7 +33,7 @@ if rake jetty:status | grep -q "^Running"; then
 fi
 
 thor drupal_jetty:init
-thor exist_jetty:init
+#thor exist_jetty:init
 
 # rake jetty:start throws an ugly/alarming error if called when the 
 # server is already running, so check first. 
@@ -42,9 +42,9 @@ if rake jetty:status | grep -q "Not running"; then
 fi
 # So that eXist works better out-of-the-box, set its admin password
 # and change its default database permissions.
-echo "Giving Jetty some time to start"
-sleep 20s
-thor exist_jetty:set_permissions
+#echo "Giving Jetty some time to start"
+#sleep 20s
+#thor exist_jetty:set_permissions
 
 echo "Starting Redis" 
 sudo service redis start 
