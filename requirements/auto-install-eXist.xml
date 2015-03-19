@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<AutomatedInstallation langpack="eng">
+  <com.izforge.izpack.panels.HTMLInfoPanel id="start"/>
+  <com.izforge.izpack.panels.TargetPanel id="UNKNOWN (com.izforge.izpack.panels.TargetPanel)">
+    <installpath>/home/vagrant/eXist-2.2</installpath>
+  </com.izforge.izpack.panels.TargetPanel>
+  <com.izforge.izpack.panels.UserInputPanel id="UserInputPanel.0">
+    <userInput>
+      <entry key="dataDir" value="/home/vagrant/eXist-2.2/webapp/WEB-INF/data"/>
+    </userInput>
+  </com.izforge.izpack.panels.UserInputPanel>
+  <com.izforge.izpack.panels.UserInputPanel id="UserInputPanel.1">
+    <userInput>
+      <entry key="MAX_MEMORY" value="1024"/>
+      <entry key="adminPasswd" value="dsgT@pas"/>
+      <entry key="cacheSize" value="128"/>
+    </userInput>
+  </com.izforge.izpack.panels.UserInputPanel>
+  <com.izforge.izpack.panels.TreePacksPanel id="UNKNOWN (com.izforge.izpack.panels.TreePacksPanel)">
+    <pack index="0" name="Sources" selected="true"/>
+    <pack index="1" name="Core" selected="true"/>
+    <pack index="2" name="Apps" selected="true"/>
+    <pack index="3" name="shared" selected="true"/>
+    <pack index="4" name="bf-XForms" selected="false"/>
+    <pack index="5" name="dashboard" selected="true"/>
+    <pack index="6" name="demo" selected="false"/>
+    <pack index="7" name="doc" selected="true"/>
+    <pack index="8" name="eXide" selected="true"/>
+    <pack index="9" name="fundocs" selected="true"/>
+    <pack index="10" name="markdown" selected="false"/>
+    <pack index="11" name="monex" selected="true"/>
+    <pack index="12" name="xqjson" selected="true"/>
+    <pack index="13" name="xsltforms" selected="false"/>
+    <pack index="14" name="xsltforms-demo" selected="false"/>
+  </com.izforge.izpack.panels.TreePacksPanel>
+  <com.izforge.izpack.panels.InstallPanel id="UNKNOWN (com.izforge.izpack.panels.InstallPanel)"/>
+  <com.izforge.izpack.panels.ProcessPanel id="UNKNOWN (com.izforge.izpack.panels.ProcessPanel)"/>
+  <com.izforge.izpack.panels.ShortcutPanel id="UNKNOWN (com.izforge.izpack.panels.ShortcutPanel)"/>
+  <com.izforge.izpack.panels.HTMLInfoPanel id="info"/>
+  <!--<com.izforge.izpack.panels.FinishPanel id="UNKNOWN (com.izforge.izpack.panels.FinishPanel)"/>-->
+</AutomatedInstallation>

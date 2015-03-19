@@ -81,6 +81,31 @@ safeish_symlink(){
 safeish_symlink /var/www/html/tapas/sites/default/settings.vagrant.php /var/www/html/tapas/sites/default/settings.php
 safeish_symlink /var/www/html/tapas/.htaccess.vagrant /var/www/html/tapas/.htaccess 
 
+# Install the latest-supported version of eXist.
+cd /home/vagrant
+new_exist_vers="2.2"	# the eXist version number
+new_exist_jar="eXist-db-setup-2.2.jar"	# the name of the eXist installer file
+new_exist_url="http://sourceforge.net/projects/exist/files/Stable/2.2/${new_exist_jar}"	# the link to download the installer
+if [ ! -d "/home/vagrant/eXist-${new_exist_vers}" ]; then 
+	echo "Installing eXist-DB"
+	# Make sure the installer isn't already present.
+	if [ -f "/home/vagrant/${new_exist_vers}" ]; then
+		echo "Latest eXist installer already available - skipping download"
+	else
+		wget -P /home/vagrant $new_exist_url
+	fi
+	# Install eXist using the auto-install script.
+	java -jar $new_exist_jar requirements/auto-install-eXist.xml
+	# Make eXist listen on port 8868.
+	
+	# Symlink through "eXist" directory?
+	#safeish_symlink "/home/vagrant/eXist-${new_exist_vers}" /home/vagrant/latest-eXist
+	# Add EXIST_HOME and JAVA_HOME environment variables.
+	echo "EXIST_HOME=/home/vagrant/eXist-${new_exist_vers}" >> /home/vagrant/.bashrc
+fi
+echo "Starting eXist"
+
+
 sudo service mysqld start
 if ! mysql -u root -e "use drupal_tapas"; then 
   echo "Creating and cloning database"
