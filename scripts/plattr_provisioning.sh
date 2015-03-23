@@ -100,7 +100,7 @@ if [ ! -d "/home/vagrant/.eXist/eXist-${new_exist_vers}" ]; then
 	if [ -f "/home/vagrant/requirements/local/${new_exist_jar}" ]; then
 		echo "Latest eXist installer already available - skipping download"
 	else
-		echo "Downloading eXist-${new_exist_vers} installer"
+		echo "Downloading the latest TAPAS-supported eXist installer"
 		wget -nv -P /home/vagrant/requirements/local $new_exist_url
 	fi
 	# Install eXist using the auto-install script.
@@ -122,9 +122,19 @@ if [ ! -d "/home/vagrant/.eXist/eXist-${new_exist_vers}" ]; then
 	source /home/vagrant/.zprofile
 	echo "JAVA_HOME is set to: $JAVA_HOME"
 	echo "EXIST_HOME is set to: $EXIST_HOME"
+	echo "Adding wrapper scripts to start eXist on reboot"
+	if [ -f /etc/init.d/exist-db ]; then
+		if [ -h /etc/init.d/exist-db ]; then
+			sudo ln -s -f /home/vagrant/latest-eXist/tools/wrapper/bin/exist.sh /etc/init.d/exist-db
+		else
+			echo "/etc/init.d/exist-db points at an actual file.  Aborting!"
+		fi
+	else
+		sudo ln -s /home/vagrant/latest-eXist/tools/wrapper/bin/exist.sh /etc/init.d/exist-db
+	fi
+	sudo chkconfig --add exist-db
 fi
-#echo "Starting eXist"
-#./latest-eXist/bin/startup.sh &
+sudo service exist-db start
 
 sudo service mysqld start
 if ! mysql -u root -e "use drupal_tapas"; then 
