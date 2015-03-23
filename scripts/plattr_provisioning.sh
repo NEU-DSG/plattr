@@ -81,30 +81,50 @@ safeish_symlink(){
 safeish_symlink /var/www/html/tapas/sites/default/settings.vagrant.php /var/www/html/tapas/sites/default/settings.php
 safeish_symlink /var/www/html/tapas/.htaccess.vagrant /var/www/html/tapas/.htaccess 
 
-# Install the latest-supported version of eXist.
-cd /home/vagrant
+# Install the latest version of eXist that TAPAS supports.
+#cd /home/vagrant
 new_exist_vers="2.2"	# the eXist version number
 new_exist_jar="eXist-db-setup-2.2.jar"	# the name of the eXist installer file
 new_exist_url="http://sourceforge.net/projects/exist/files/Stable/2.2/${new_exist_jar}"	# the link to download the installer
-if [ ! -d "/home/vagrant/eXist-${new_exist_vers}" ]; then 
+if [ ! -d "/home/vagrant/.eXist/eXist-${new_exist_vers}" ]; then 
 	echo "Installing eXist-DB"
-	# Make sure the installer isn't already present.
-	if [ -f "/home/vagrant/${new_exist_vers}" ]; then
+	# Ensure the .eXist directory is present.
+	if [ ! -d "/home/vagrant/.eXist" ]; then
+		mkdir /home/vagrant/.eXist
+	fi
+	# Ensure the requirements/local directory is present.
+	if [ ! -d "/home/vagrant/requirements/local" ]; then
+		mkdir /home/vagrant/requirements/local
+	fi
+	# Download the eXist installer to requirements/local for persistence over box rebuilds.
+	if [ -f "/home/vagrant/requirements/local/${new_exist_jar}" ]; then
 		echo "Latest eXist installer already available - skipping download"
 	else
-		wget -P /home/vagrant $new_exist_url
+		echo "Downloading eXist-${new_exist_vers} installer"
+		wget -nv -P /home/vagrant/requirements/local $new_exist_url
 	fi
 	# Install eXist using the auto-install script.
-	java -jar $new_exist_jar requirements/auto-install-eXist.xml
-	# Make eXist listen on port 8868.
-	
-	# Symlink through "eXist" directory?
-	#safeish_symlink "/home/vagrant/eXist-${new_exist_vers}" /home/vagrant/latest-eXist
-	# Add EXIST_HOME and JAVA_HOME environment variables.
-	echo "EXIST_HOME=/home/vagrant/eXist-${new_exist_vers}" >> /home/vagrant/.bashrc
+	echo "Installing eXist-${new_exist_vers}"
+	java -jar /home/vagrant/requirements/local/$new_exist_jar /home/vagrant/requirements/auto-install-eXist.xml
+	# Back up the original jetty.xml before editing ports.
+	mv /home/vagrant/.eXist/eXist-$new_exist_vers/tools/jetty/etc/jetty.xml /home/vagrant/.eXist/eXist-$new_exist_vers/tools/jetty/etc/jetty.xml.tmpl
+	echo "Configuring eXist to use port 8868"
+	sed 's/8080/8868/g' /home/vagrant/.eXist/eXist-$new_exist_vers/tools/jetty/etc/jetty.xml.tmpl > /home/vagrant/.eXist/eXist-$new_exist_vers/tools/jetty/etc/jetty.xml
+	# Symlink through "latest-eXist" directory.
+	safeish_symlink "/home/vagrant/.eXist/eXist-${new_exist_vers}" /home/vagrant/latest-eXist
+	# Ensure EXIST_HOME and JAVA_HOME environment variables are set.
+	if [ -z $JAVA_HOME ]; then
+		echo "export JAVA_HOME=/usr/lib/jre" >> /home/vagrant/.zprofile
+	fi
+	if [ -z $EXIST_HOME ]; then
+		echo "export EXIST_HOME=/home/vagrant/latest-eXist" >> /home/vagrant/.zprofile
+	fi
+	source /home/vagrant/.zprofile
+	echo "JAVA_HOME is set to: $JAVA_HOME"
+	echo "EXIST_HOME is set to: $EXIST_HOME"
 fi
-echo "Starting eXist"
-
+#echo "Starting eXist"
+#./latest-eXist/bin/startup.sh &
 
 sudo service mysqld start
 if ! mysql -u root -e "use drupal_tapas"; then 
