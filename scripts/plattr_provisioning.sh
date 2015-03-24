@@ -81,11 +81,27 @@ safeish_symlink(){
 safeish_symlink /var/www/html/tapas/sites/default/settings.vagrant.php /var/www/html/tapas/sites/default/settings.php
 safeish_symlink /var/www/html/tapas/.htaccess.vagrant /var/www/html/tapas/.htaccess 
 
+# Remove out-of-date installations of eXist (as implemented
+# by cerberus-core or tapas_rails).
+echo "Searching for out-of-date, Hydra-dependent installations of eXist-db..."
+cd /home/vagrant/tapas_rails
+git clean -f -d -x jetty/webapps/exist*
+git clean -f -x jetty/contexts/exist*
+git clean -f -x config/exist.yml
+# If exist.yml still exists, then exist.yml was not affected
+# by the git clean because it is a tracked file.
+if [ -f "/home/vagrant/tapas_rails/config/exist.yml" ]; then
+	echo "Could not remove exist.yml. Update your local tapas_rails repository!"
+fi
+echo "Proceeding."
+
 # Install the latest version of eXist that TAPAS supports.
-#cd /home/vagrant
-new_exist_vers="2.2"	# the eXist version number
-new_exist_jar="eXist-db-setup-2.2.jar"	# the name of the eXist installer file
-new_exist_url="http://sourceforge.net/projects/exist/files/Stable/2.2/${new_exist_jar}"	# the link to download the installer
+# the eXist version number
+new_exist_vers="2.2"
+# the name of the eXist installer file
+new_exist_jar="eXist-db-setup-2.2.jar"
+# the link to download the installer
+new_exist_url="http://sourceforge.net/projects/exist/files/Stable/2.2/${new_exist_jar}"
 if [ ! -d "/home/vagrant/.eXist/eXist-${new_exist_vers}" ]; then 
 	echo "Installing eXist-DB"
 	# Ensure the .eXist directory is present.
@@ -110,7 +126,7 @@ if [ ! -d "/home/vagrant/.eXist/eXist-${new_exist_vers}" ]; then
 	mv /home/vagrant/.eXist/eXist-$new_exist_vers/tools/jetty/etc/jetty.xml /home/vagrant/.eXist/eXist-$new_exist_vers/tools/jetty/etc/jetty.xml.tmpl
 	echo "Configuring eXist to use port 8868"
 	sed 's/8080/8868/g' /home/vagrant/.eXist/eXist-$new_exist_vers/tools/jetty/etc/jetty.xml.tmpl > /home/vagrant/.eXist/eXist-$new_exist_vers/tools/jetty/etc/jetty.xml
-	# Symlink through "latest-eXist" directory.
+	# Create symlink "latest-eXist".
 	safeish_symlink "/home/vagrant/.eXist/eXist-${new_exist_vers}" /home/vagrant/latest-eXist
 	# Ensure EXIST_HOME and JAVA_HOME environment variables are set.
 	if [ -z $JAVA_HOME ]; then
@@ -122,7 +138,8 @@ if [ ! -d "/home/vagrant/.eXist/eXist-${new_exist_vers}" ]; then
 	source /home/vagrant/.zprofile
 	echo "JAVA_HOME is set to: $JAVA_HOME"
 	echo "EXIST_HOME is set to: $EXIST_HOME"
-	echo "Adding wrapper scripts to start eXist on reboot"
+	# Make eXist a service, using a built-in script.
+	echo "Configuring eXist to start on boot"
 	if [ -f /etc/init.d/exist-db ]; then
 		if [ -h /etc/init.d/exist-db ]; then
 			sudo ln -s -f /home/vagrant/latest-eXist/tools/wrapper/bin/exist.sh /etc/init.d/exist-db
