@@ -90,9 +90,9 @@ git clean -f -x jetty/contexts/exist*
 git clean -f -x config/exist.yml
 # If exist.yml still exists, then exist.yml was not affected
 # by the git clean because it is a tracked file.
-if [ -f "/home/vagrant/tapas_rails/config/exist.yml" ]; then
-	echo "Could not remove exist.yml. Update your local tapas_rails repository!"
-fi
+#if [ ! -f "/home/vagrant/tapas_rails/config/exist.yml" ]; then
+#	echo "Could not find exist.yml. Update your local tapas_rails repository!"
+#fi
 echo "Proceeding."
 
 # Install the latest version of eXist that TAPAS supports.
