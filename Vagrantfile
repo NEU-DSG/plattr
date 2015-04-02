@@ -22,6 +22,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
   # Apply defaults 
+  custom_config["buildtapas"] ||= "~/buildtapas"
   custom_config["tapas_directory"] ||= "~/tapas"
   custom_config["tapas_rails_directory"] ||= "~/tapas_rails"
 
@@ -71,9 +72,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     s.args = ["#{ENV['USER_ID']}"]
   end
 
-  config.vm.synced_folder "requirements", "/home/vagrant/requirements", nfs: true
+  config.vm.synced_folder custom_config["buildtapas"], "/home/vagrant/buildtapas", nfs: true
   config.vm.synced_folder custom_config["tapas_rails_directory"], "/home/vagrant/tapas_rails", nfs: true 
-  config.vm.synced_folder custom_config["tapas_directory"], "/var/www/html/tapas", nfs: true
 
   config.vm.network "private_network", ip: "192.168.3.6"
 end
