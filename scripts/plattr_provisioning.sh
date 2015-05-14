@@ -53,7 +53,9 @@ echo "Setting up tapas"
 sudo chown -R vagrant /var/www/html 
 mkdir /var/www/html/tapas
 cp /home/vagrant/buildtapas/buildtapas.sh /var/www/html/tapas
-# sh /var/www/html/tapas/buildtapas.sh "root" "" "tapas_drupal" "drupaldb" "drupaldb"
+echo "export PATH=\$PATH:/home/vagrant/.composer/vendor/bin" >> /home/vagrant/.bashrc
+cd /var/www/html/tapas
+/bin/bash --login /var/www/html/tapas/buildtapas.sh "root" "" "tapas_drupal" "drupaldb" "drupaldb"
 
 # We need to override the `AllowOverride None` on DocumentRoot (/var/www/html). 
 # The `Include conf.d/*.conf` line in httpd.conf occurs before the directive, 
