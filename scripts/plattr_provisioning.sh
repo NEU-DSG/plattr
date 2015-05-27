@@ -101,7 +101,7 @@ new_exist_vers="2.2"
 # the name of the eXist installer file
 new_exist_jar="eXist-db-setup-2.2.jar"
 # the link to download the installer
-new_exist_url="http://sourceforge.net/projects/exist/files/Stable/2.2/${new_exist_jar}"
+new_exist_url="http://sourceforge.net/projects/exist/files/Stable/${new_exist_vers}/${new_exist_jar}"
 if [ ! -d "/home/vagrant/.eXist/eXist-${new_exist_vers}" ]; then 
 	echo "Installing eXist-DB"
 	# Ensure the .eXist directory is present.
@@ -121,7 +121,7 @@ if [ ! -d "/home/vagrant/.eXist/eXist-${new_exist_vers}" ]; then
 	fi
 	# Install eXist using the auto-install script.
 	echo "Installing eXist-${new_exist_vers}"
-	java -jar /home/vagrant/requirements/local/$new_exist_jar /home/vagrant/requirements/auto-install-eXist.xml
+	java -jar /home/vagrant/requirements/local/$new_exist_jar /home/vagrant/requirements/eXist-config/auto-install.xml
 	# Back up the original jetty.xml before editing ports.
 	mv /home/vagrant/.eXist/eXist-$new_exist_vers/tools/jetty/etc/jetty.xml /home/vagrant/.eXist/eXist-$new_exist_vers/tools/jetty/etc/jetty.xml.tmpl
 	echo "Configuring eXist to use port 8868"
