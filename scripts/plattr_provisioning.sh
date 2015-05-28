@@ -1,8 +1,13 @@
 #!/usr/bin/env bash 
 /bin/bash --login
 
+# Update composer
+/usr/local/bin/composer self-update
 # Update drush
 composer global require drush/drush:dev-master
+# Update boris-loader
+cd /home/vagrant/boris-loader
+git pull origin master 
 
 echo "Configuring tapas_rails"
 cd /home/vagrant/tapas_rails
