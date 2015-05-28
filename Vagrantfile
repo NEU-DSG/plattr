@@ -22,7 +22,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
   # Apply defaults 
-  custom_config["tapas_directory"] ||= "~/tapas"
   custom_config["tapas_rails_directory"] ||= "~/tapas_rails"
 
   # Caches yum packages to cut down on install time after the first 
@@ -72,6 +71,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
   config.vm.synced_folder custom_config["tapas_rails_directory"], "/home/vagrant/tapas_rails", nfs: true 
+  config.vm.synced_folder ".", "/vagrant", :type => "nfs"
 
   config.vm.network "private_network", ip: "192.168.3.6"
 end
