@@ -1,6 +1,9 @@
 #!/usr/bin/env bash 
 /bin/bash --login
 
+# Update drush
+composer global require drush/drush:dev-master
+
 echo "Configuring tapas_rails"
 cd /home/vagrant/tapas_rails
 gem install bundler 
@@ -45,11 +48,12 @@ sudo service redis start
 
 echo "Setting up tapas" 
 sudo chown -R vagrant /var/www/html 
-mkdir /var/www/html/tapas
 echo "export PATH=\$PATH:/home/vagrant/.composer/vendor/bin" >> /home/vagrant/.bashrc
 # buildtapas script places the site in the directory it is executed from
-cd /var/www/html/tapas
-/bin/bash --login /home/vagrant/buildtapas/buildtapas.sh "root" "" "tapas_drupal" "drupaldb" "drupaldb"
+cd /var/www/html
+curl -O https://raw.githubusercontent.com/neu-dsg/buildtapas/master/buildtapas.sh
+sed -i.bak 's/8080/3306/g' buildtapas.sh
+/bin/bash --login /var/www/html/buildtapas.sh "root" "" "tapas_drupal" "drupaldb" "drupaldb"
 
 # We need to override the `AllowOverride None` on DocumentRoot (/var/www/html). 
 # The `Include conf.d/*.conf` line in httpd.conf occurs before the directive, 
