@@ -5,11 +5,11 @@ Isn't fancy or interesting or even really a proper project.  It's just a Vagrant
 
 ## Installation Instructions 
 
-1. Ensure that you have a relatively modern [Vagrant](http://www.vagrantup.com/) installation on your machine.  Downloads are [here](https://www.vagrantup.com/downloads.html).  I, @jbuckle, am running Vagrant 1.5.0.  The latest is 1.6.5, which I imagine (haven't actually checked) ought to work. 
+1. Ensure that you have a relatively modern [Vagrant](http://www.vagrantup.com/) installation on your machine.  Downloads are [here](https://www.vagrantup.com/downloads.html).  This is currently tested with version 1.7.2.
     * For a significant speed increase during vagrant creation, install the vagrant-cachier plugin.  Documentation [here](https://github.com/fgrehm/vagrant-cachier).  The command is ``vagrant plugin install vagrant-cachier``
-2. Clone the repository down: ``git clone https://github.com/NEU-DSG/plattr.git``
+2. Clone the repository down: ``git clone https://github.com/neu-dsg/plattr.git``
 3. Ensure that within the plattr directory, you create a requirements/local directory 
-3. Clone the tapas_rails repository down: ``git clone https://github.com/neu-libraries/tapas_rails.git``
+3. Clone the tapas_rails repository down: ``git clone https://github.com/neu-dsg/tapas_rails.git``
     * For a significant speed increase during vagrant up, run ``bundle package`` from inside the tapas_rails directory.  This will cache the gems specified by the project Gemfile into vendor/cache and eliminate the need to dl them from inside your Vagrant box.  Note that you need to have ruby installed and the bundler gem available for this to do anything.
 4.  There is one file not in VC that is required for the project to run.  Ask me (@jbuckle) for the application.yml file and then place it at ~/tapas_rails/config/
 5. CD into the root directory of the project and run ``vagrant up``.  Be patient - installation takes time. 
