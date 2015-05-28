@@ -11,6 +11,7 @@
   <xsl:import href="config-manips.xsl"/>
   <xsl:output indent="yes"/>
   
+  <!-- Do not use RESTXQ or application autodeployment. -->
   <xsl:template
     match="startup//trigger[@class='org.exist.extensions.exquery.restxq.impl.RestXqStartupTrigger' or 
                             @class='org.exist.repo.AutoDeploymentTrigger']">
@@ -23,10 +24,13 @@
     </xsl:call-template>
   </xsl:template>
   
+  <!-- Preserve whitespace when it exists in nodes with both textual and 
+    elemental content. -->
   <xsl:template match="indexer/@preserve-whitespace-mixed-content">
     <xsl:attribute name="preserve-whitespace-mixed-content">yes</xsl:attribute>
   </xsl:template>
   
+  <!-- Use word stemming. -->
   <xsl:template match="indexer/@stemming">
     <xsl:attribute name="stemming">yes</xsl:attribute>
   </xsl:template>
@@ -41,10 +45,12 @@
     </xsl:call-template>
   </xsl:template>
   
+  <!-- Allow XSLT stylesheets to be run on XML display. -->
   <xsl:template match="serializer/@enable-xsl">
     <xsl:attribute name="enable-xsl">yes</xsl:attribute>
   </xsl:template>
   
+  <!-- Do not use the following built-in modules: -->
   <xsl:template match="builtin-modules/module[@uri='http://exist-db.org/xquery/examples' or
                                               @uri='http://exist-db.org/xquery/mail'  or
                                               @uri='http://exquery.org/ns/restxq' or
