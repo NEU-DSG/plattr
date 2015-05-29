@@ -5,7 +5,7 @@ Isn't fancy or interesting or even really a proper project.  It's just a Vagrant
 
 ## Installation Instructions 
 
-1. Ensure that you have a relatively modern [Vagrant](http://www.vagrantup.com/) installation on your machine.  Downloads are [here](https://www.vagrantup.com/downloads.html).  This is currently tested with version 1.7.2.
+1. Ensure that you have the correct versions of [Vagrant](http://www.vagrantup.com/) and [VirtualBox](https://www.virtualbox.org/) on your machine.  Vagrant can be downloaded [here](https://www.vagrantup.com/downloads.html) and Virtualbox can be downloaded [here](https://www.virtualbox.org/wiki/Downloads).  Use Vagrant **1.7.2** and VirtualBox **4.3.28**.  While other versions should work, note that they may introduce bugs.  Flux w/r/t VirtualBox versions seems to be especially bad for this.  
     * For a significant speed increase during vagrant creation, install the vagrant-cachier plugin.  Documentation [here](https://github.com/fgrehm/vagrant-cachier).  The command is ``vagrant plugin install vagrant-cachier``
 2. Clone the repository down: ``git clone https://github.com/neu-dsg/plattr.git``
 3. Ensure that within the plattr directory, you create a requirements/local directory 
