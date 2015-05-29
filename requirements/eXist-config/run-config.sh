@@ -25,6 +25,10 @@ mv $EXIST_HOME/webapp/WEB-INF/controller-config.xml $EXIST_HOME/webapp/WEB-INF/c
 java -jar $EXIST_HOME/lib/endorsed/saxonhe*.jar -s:$EXIST_HOME/webapp/WEB-INF/controller-config.xml.orig -xsl:/home/vagrant/requirements/eXist-config/network-servlet-management.xsl -o:$EXIST_HOME/webapp/WEB-INF/controller-config.xml
 mv $EXIST_HOME/webapp/WEB-INF/web.xml $EXIST_HOME/webapp/WEB-INF/web.xml.orig
 java -jar $EXIST_HOME/lib/endorsed/saxonhe*.jar -s:$EXIST_HOME/webapp/WEB-INF/web.xml.orig -xsl:/home/vagrant/requirements/eXist-config/network-servlet-management.xsl -o:$EXIST_HOME/webapp/WEB-INF/web.xml
+# Normally, eXist will automatically deploy any apps in the 'autodeploy' folder 
+#  on the server. A script has already disabled this functionality, but now we
+#  need to make sure that the folder is removed.
+mv $EXIST_HOME/autodeploy/ $EXIST_HOME/OLDautodeploy
 
 # Give an eXist-specific user ownership over $EXIST_HOME and running the service
 if [$set_sysuser=='true']; then
