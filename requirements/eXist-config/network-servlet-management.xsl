@@ -16,8 +16,9 @@
   <xsl:output indent="yes"/>
   
   <!-- List the servlets to disable here. -->
-  <xsl:variable name="disabledServlet" select="('milton', 'AtomServlet', 
-    'RestXqServlet', 'AxisServlet', 'AdminServlet', 'JMXServlet', 'XQueryServlet')"/>
+  <xsl:variable name="disabledServlet" 
+    select="('milton', 'AtomServlet', 'RestXqServlet', 'AxisServlet', 
+             'AdminServlet', 'JMXServlet', 'XQueryServlet')"/>
   
   <xsl:template match="ex:forward[@servlet=$disabledServlet] | 
                         web:servlet[web:servlet-name=$disabledServlet]">

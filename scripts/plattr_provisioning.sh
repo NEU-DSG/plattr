@@ -122,10 +122,6 @@ if [ ! -d "/home/vagrant/.eXist/eXist-${new_exist_vers}" ]; then
 	# Install eXist using the auto-install script.
 	echo "Installing eXist-${new_exist_vers}"
 	java -jar /home/vagrant/requirements/local/$new_exist_jar /home/vagrant/requirements/eXist-config/auto-install.xml
-	# Back up the original jetty.xml before editing ports.
-	mv /home/vagrant/.eXist/eXist-$new_exist_vers/tools/jetty/etc/jetty.xml /home/vagrant/.eXist/eXist-$new_exist_vers/tools/jetty/etc/jetty.xml.tmpl
-	echo "Configuring eXist to use port 8868"
-	sed 's/8080/8868/g' /home/vagrant/.eXist/eXist-$new_exist_vers/tools/jetty/etc/jetty.xml.tmpl > /home/vagrant/.eXist/eXist-$new_exist_vers/tools/jetty/etc/jetty.xml
 	# Create symlink "latest-eXist".
 	safeish_symlink "/home/vagrant/.eXist/eXist-${new_exist_vers}" /home/vagrant/latest-eXist
 	# Ensure EXIST_HOME and JAVA_HOME environment variables are set.
@@ -138,20 +134,10 @@ if [ ! -d "/home/vagrant/.eXist/eXist-${new_exist_vers}" ]; then
 	source /home/vagrant/.zprofile
 	echo "JAVA_HOME is set to: $JAVA_HOME"
 	echo "EXIST_HOME is set to: $EXIST_HOME"
-	# Make eXist a service, using a built-in script.
-	echo "Configuring eXist to start on boot"
-	if [ -f /etc/init.d/exist-db ]; then
-		if [ -h /etc/init.d/exist-db ]; then
-			sudo ln -s -f /home/vagrant/latest-eXist/tools/wrapper/bin/exist.sh /etc/init.d/exist-db
-		else
-			echo "/etc/init.d/exist-db points at an actual file.  Aborting!"
-		fi
-	else
-		sudo ln -s /home/vagrant/latest-eXist/tools/wrapper/bin/exist.sh /etc/init.d/exist-db
-	fi
-	sudo chkconfig --add exist-db
+	
+	sh /home/vagrant/requirements/eXist-config/run-config.sh
 fi
-sudo service exist-db start
+sudo service existdb start
 
 sudo service mysqld start
 if ! mysql -u root -e "use drupal_tapas"; then 
