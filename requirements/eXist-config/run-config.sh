@@ -10,40 +10,55 @@
 
 # Last modified: May 2015
 # Author: Ashley M. Clark
-new_port='8868'
-set_sysuser='true'
 
-if [$new_port!='8080']; then
+new_port="8868"
+set_sysuser="false"
+del_autodeploy="false"
+
+# Use regex and XSLT to make changes to config files.
+if [ $new_port != "8080" ]; then
   echo "Configuring eXist to use port $new_port"
   mv $EXIST_HOME/tools/jetty/etc/jetty.xml $EXIST_HOME/tools/jetty/etc/jetty.xml.orig
-  sed 's/8080/$new_port/g' $EXIST_HOME/tools/jetty/etc/jetty.xml.orig > $EXIST_HOME/tools/jetty/etc/jetty.xml
+  sed "s/8080/$new_port/g" $EXIST_HOME/tools/jetty/etc/jetty.xml.orig > $EXIST_HOME/tools/jetty/etc/jetty.xml
 fi
 echo "Running configuration stylesheets"
+# Configure startup and database options.
 mv $EXIST_HOME/conf.xml $EXIST_HOME/conf.xml.orig
 java -jar $EXIST_HOME/lib/endorsed/saxonhe*.jar -s:$EXIST_HOME/conf.xml.orig -xsl:/home/vagrant/requirements/eXist-config/startup-and-db-config.xsl -o:$EXIST_HOME/conf.xml
+# Disable URL forwarding to unneeded servlets.
 mv $EXIST_HOME/webapp/WEB-INF/controller-config.xml $EXIST_HOME/webapp/WEB-INF/controller-config.xml.orig
 java -jar $EXIST_HOME/lib/endorsed/saxonhe*.jar -s:$EXIST_HOME/webapp/WEB-INF/controller-config.xml.orig -xsl:/home/vagrant/requirements/eXist-config/network-servlet-management.xsl -o:$EXIST_HOME/webapp/WEB-INF/controller-config.xml
+# Disable unneeded network servlets.
 mv $EXIST_HOME/webapp/WEB-INF/web.xml $EXIST_HOME/webapp/WEB-INF/web.xml.orig
 java -jar $EXIST_HOME/lib/endorsed/saxonhe*.jar -s:$EXIST_HOME/webapp/WEB-INF/web.xml.orig -xsl:/home/vagrant/requirements/eXist-config/network-servlet-management.xsl -o:$EXIST_HOME/webapp/WEB-INF/web.xml
+# Generalize the Java path that the service wrapper wants to use.
+mv $EXIST_HOME/tools/wrapper/conf/wrapper.conf $EXIST_HOME/tools/wrapper/conf/wrapper.conf.orig
+sed -E "s/\/usr\/lib\/jvm\/java.*\/jre(\/bin\/java)$/\/etc\/alternatives\/jre\1/g" $EXIST_HOME/tools/wrapper/conf/wrapper.conf.orig > $EXIST_HOME/tools/wrapper/conf/wrapper.conf
+
 # Normally, eXist will automatically deploy any apps in the 'autodeploy' folder 
 #  on the server. A script has already disabled this functionality, but now we
-#  need to make sure that the folder is removed.
-mv $EXIST_HOME/autodeploy/ $EXIST_HOME/OLDautodeploy
+#  need to make sure that the folder is renamed, if not removed.
+#if [ $del_autodeploy == "false" ]; then
+#  mv $EXIST_HOME/autodeploy/ $EXIST_HOME/non-autodeploy
+#else
+#  rm -R $EXIST_HOME/autodeploy/
+#fi
 
-# Give an eXist-specific user ownership over $EXIST_HOME and running the service
-if [$set_sysuser=='true']; then
-  if [grep 'existdb' /etc/passwd]; then 
+# Give an eXist-specific user ownership over $EXIST_HOME and running the service.
+if [ $set_sysuser == "true" ]; then
+  grep --silent "existdb" /etc/passwd
+  if [ $? == 1 ]; then 
     echo "Adding a system user account for eXist"
-    sudo useradd -r -U existdb
+    sudo useradd -U existdb
   fi
   echo "Giving ownership of $EXIST_HOME to user 'existdb'"
-  sudo chown existdb:existdb $EXIST_HOME
-  sed -E "s/^#(RUN_AS_USER=)$/\1existdb/g" $EXIST_HOME/tools/wrapper/bin/exist.sh
+  mv $EXIST_HOME/tools/wrapper/bin/exist.sh $EXIST_HOME/tools/wrapper/bin/exist.sh.orig
+  sed -E "s/^#(RUN_AS_USER=)$/\1existdb/g" $EXIST_HOME/tools/wrapper/bin/exist.sh.orig > $EXIST_HOME/tools/wrapper/bin/exist.sh
+  sudo chown -R existdb:existdb $EXIST_HOME/
 fi
-# Point eXist to the generalized Java symbolic link (to the currently-used version.)
-sed -E "s/(\/usr\/lib\/jvm\/java).*(\/jre\/bin\/java)$/\1\2/g" $EXIST_HOME/tools/wrapper/conf/wrapper.conf
+sudo chmod -R --preserve-root 775 $EXIST_HOME
 # Make eXist a service, using a built-in script.
-echo "Configuring eXist to start on boot"
+echo "Setting up eXist as a service"
 if [ -f /etc/init.d/existdb ]; then
 	if [ -h /etc/init.d/existdb ]; then
 		sudo ln -s -f $EXIST_HOME/tools/wrapper/bin/exist.sh /etc/init.d/existdb
@@ -53,4 +68,5 @@ if [ -f /etc/init.d/existdb ]; then
 else
 	sudo ln -s $EXIST_HOME/tools/wrapper/bin/exist.sh /etc/init.d/existdb
 fi
+echo "Configuring eXist to start on boot"
 sudo chkconfig --add existdb

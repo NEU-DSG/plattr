@@ -12,7 +12,7 @@
   <xsl:output indent="yes"/>
   
   <!-- Do not use RESTXQ or application autodeployment. -->
-  <xsl:template
+  <!--<xsl:template
     match="startup//trigger[@class='org.exist.extensions.exquery.restxq.impl.RestXqStartupTrigger' or 
                             @class='org.exist.repo.AutoDeploymentTrigger']">
     <xsl:call-template name="commentOut">
@@ -22,7 +22,7 @@
         </xsl:copy>
       </xsl:with-param>
     </xsl:call-template>
-  </xsl:template>
+  </xsl:template>-->
   
   <!-- Preserve whitespace when it exists in nodes with both textual and 
     elemental content. -->

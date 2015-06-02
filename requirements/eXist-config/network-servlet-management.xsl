@@ -13,12 +13,12 @@
   <!--   author: Ashley M. Clark                                            -->
   
   <xsl:import href="config-manips.xsl"/>
-  <xsl:output indent="yes"/>
+  <xsl:output indent="yes" omit-xml-declaration="yes"/>
   
   <!-- List the servlets to disable here. -->
   <xsl:variable name="disabledServlet" 
     select="('milton', 'AtomServlet', 'RestXqServlet', 'AxisServlet', 
-             'AdminServlet', 'JMXServlet', 'XQueryServlet')"/>
+             'AdminServlet', 'JMXServlet')"/>
   
   <xsl:template match="ex:forward[@servlet=$disabledServlet] | 
                         web:servlet[web:servlet-name=$disabledServlet]">

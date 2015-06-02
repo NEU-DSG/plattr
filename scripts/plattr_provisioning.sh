@@ -126,7 +126,7 @@ if [ ! -d "/home/vagrant/.eXist/eXist-${new_exist_vers}" ]; then
 	safeish_symlink "/home/vagrant/.eXist/eXist-${new_exist_vers}" /home/vagrant/latest-eXist
 	# Ensure EXIST_HOME and JAVA_HOME environment variables are set.
 	if [ -z $JAVA_HOME ]; then
-		echo "export JAVA_HOME=/usr/bin/java" >> /home/vagrant/.zprofile
+		echo "export JAVA_HOME=/etc/alternatives/jre" >> /home/vagrant/.zprofile
 	fi
 	if [ -z $EXIST_HOME ]; then
 		echo "export EXIST_HOME=/home/vagrant/latest-eXist" >> /home/vagrant/.zprofile
