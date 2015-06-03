@@ -14,6 +14,8 @@
 new_port="8868"
 set_sysuser="false"
 del_autodeploy="false"
+DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+
 
 # Use regex and XSLT to make changes to config files.
 if [ $new_port != "8080" ]; then
@@ -24,13 +26,13 @@ fi
 echo "Running configuration stylesheets"
 # Configure startup and database options.
 mv $EXIST_HOME/conf.xml $EXIST_HOME/conf.xml.orig
-java -jar $EXIST_HOME/lib/endorsed/saxonhe*.jar -s:$EXIST_HOME/conf.xml.orig -xsl:/home/vagrant/requirements/eXist-config/startup-and-db-config.xsl -o:$EXIST_HOME/conf.xml
+java -jar $EXIST_HOME/lib/endorsed/saxonhe*.jar -s:$EXIST_HOME/conf.xml.orig -xsl:$DIR/startup-and-db-config.xsl -o:$EXIST_HOME/conf.xml
 # Disable URL forwarding to unneeded servlets.
 mv $EXIST_HOME/webapp/WEB-INF/controller-config.xml $EXIST_HOME/webapp/WEB-INF/controller-config.xml.orig
-java -jar $EXIST_HOME/lib/endorsed/saxonhe*.jar -s:$EXIST_HOME/webapp/WEB-INF/controller-config.xml.orig -xsl:/home/vagrant/requirements/eXist-config/network-servlet-management.xsl -o:$EXIST_HOME/webapp/WEB-INF/controller-config.xml
+java -jar $EXIST_HOME/lib/endorsed/saxonhe*.jar -s:$EXIST_HOME/webapp/WEB-INF/controller-config.xml.orig -xsl:$DIR/network-servlet-management.xsl -o:$EXIST_HOME/webapp/WEB-INF/controller-config.xml
 # Disable unneeded network servlets.
 mv $EXIST_HOME/webapp/WEB-INF/web.xml $EXIST_HOME/webapp/WEB-INF/web.xml.orig
-java -jar $EXIST_HOME/lib/endorsed/saxonhe*.jar -s:$EXIST_HOME/webapp/WEB-INF/web.xml.orig -xsl:/home/vagrant/requirements/eXist-config/network-servlet-management.xsl -o:$EXIST_HOME/webapp/WEB-INF/web.xml
+java -jar $EXIST_HOME/lib/endorsed/saxonhe*.jar -s:$EXIST_HOME/webapp/WEB-INF/web.xml.orig -xsl:$DIR/network-servlet-management.xsl -o:$EXIST_HOME/webapp/WEB-INF/web.xml
 # Generalize the Java path that the service wrapper wants to use.
 mv $EXIST_HOME/tools/wrapper/conf/wrapper.conf $EXIST_HOME/tools/wrapper/conf/wrapper.conf.orig
 sed -E "s/\/usr\/lib\/jvm\/java.*\/jre(\/bin\/java)$/\/etc\/alternatives\/jre\1/g" $EXIST_HOME/tools/wrapper/conf/wrapper.conf.orig > $EXIST_HOME/tools/wrapper/conf/wrapper.conf
