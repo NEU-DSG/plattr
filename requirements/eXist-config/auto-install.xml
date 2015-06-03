@@ -25,7 +25,7 @@
     <pack index="5" name="dashboard" selected="true"/>
     <pack index="6" name="demo" selected="false"/>
     <pack index="7" name="doc" selected="true"/>
-    <pack index="8" name="eXide" selected="true"/>
+    <pack index="8" name="eXide" selected="false"/>
     <pack index="9" name="fundocs" selected="true"/>
     <pack index="10" name="markdown" selected="false"/>
     <pack index="11" name="monex" selected="true"/>

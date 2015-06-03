@@ -104,13 +104,13 @@ new_exist_vers="2.2"
 # the name of the eXist installer file
 new_exist_jar="eXist-db-setup-2.2.jar"
 # the link to download the installer
-new_exist_url="http://sourceforge.net/projects/exist/files/Stable/2.2/${new_exist_jar}"
+new_exist_url="http://sourceforge.net/projects/exist/files/Stable/${new_exist_vers}/${new_exist_jar}"
 if [ ! -d "/home/vagrant/.eXist/eXist-${new_exist_vers}" ]; then 
-  echo "Installing eXist-DB"
-  # Ensure the .eXist directory is present.
-  if [ ! -d "/home/vagrant/.eXist" ]; then
-    mkdir /home/vagrant/.eXist
-  fi
+	echo "Installing eXist-DB"
+	# Ensure the .eXist directory is present.
+	if [ ! -d "/home/vagrant/.eXist" ]; then
+		mkdir /home/vagrant/.eXist
+	fi
   # Ensure the requirements/local directory is present.
   if [ ! -d "/vagrant/requirements/local" ]; then
     mkdir /vagrant/requirements/local
@@ -122,39 +122,25 @@ if [ ! -d "/home/vagrant/.eXist/eXist-${new_exist_vers}" ]; then
     echo "Downloading the latest TAPAS-supported eXist installer"
     wget -nv -P /vagrant/requirements/local $new_exist_url
   fi
-  # Install eXist using the auto-install script.
-  echo "Installing eXist-${new_exist_vers}"
-  java -jar /vagrant/requirements/local/$new_exist_jar /vagrant/requirements/auto-install-eXist.xml
-  # Back up the original jetty.xml before editing ports.
-  mv /home/vagrant/.eXist/eXist-$new_exist_vers/tools/jetty/etc/jetty.xml /home/vagrant/.eXist/eXist-$new_exist_vers/tools/jetty/etc/jetty.xml.tmpl
-  echo "Configuring eXist to use port 8868"
-  sed 's/8080/8868/g' /home/vagrant/.eXist/eXist-$new_exist_vers/tools/jetty/etc/jetty.xml.tmpl > /home/vagrant/.eXist/eXist-$new_exist_vers/tools/jetty/etc/jetty.xml
-  # Create symlink "latest-eXist".
-  safeish_symlink "/home/vagrant/.eXist/eXist-${new_exist_vers}" /home/vagrant/latest-eXist
-  # Ensure EXIST_HOME and JAVA_HOME environment variables are set.
-  if [ -z $JAVA_HOME ]; then
-    echo "export JAVA_HOME=/usr/lib/jre" >> /home/vagrant/.zprofile
-  fi
-  if [ -z $EXIST_HOME ]; then
-    echo "export EXIST_HOME=/home/vagrant/latest-eXist" >> /home/vagrant/.zprofile
-  fi
-  source /home/vagrant/.zprofile
-  echo "JAVA_HOME is set to: $JAVA_HOME"
-  echo "EXIST_HOME is set to: $EXIST_HOME"
-  # Make eXist a service, using a built-in script.
-  echo "Configuring eXist to start on boot"
-  if [ -f /etc/init.d/exist-db ]; then
-    if [ -h /etc/init.d/exist-db ]; then
-      sudo ln -s -f /home/vagrant/latest-eXist/tools/wrapper/bin/exist.sh /etc/init.d/exist-db
-    else
-      echo "/etc/init.d/exist-db points at an actual file.  Aborting!"
-    fi
-  else
-    sudo ln -s /home/vagrant/latest-eXist/tools/wrapper/bin/exist.sh /etc/init.d/exist-db
-  fi
-  sudo chkconfig --add exist-db
+	# Install eXist using the auto-install script.
+	echo "Installing eXist-${new_exist_vers}"
+	java -jar /vagrant/requirements/local/$new_exist_jar /vagrant/requirements/eXist-config/auto-install.xml
+	# Create symlink "latest-eXist".
+	safeish_symlink "/home/vagrant/.eXist/eXist-${new_exist_vers}" /home/vagrant/latest-eXist
+	# Ensure EXIST_HOME and JAVA_HOME environment variables are set.
+	if [ -z $JAVA_HOME ]; then
+		echo "export JAVA_HOME=/etc/alternatives/jre" >> /home/vagrant/.zprofile
+	fi
+	if [ -z $EXIST_HOME ]; then
+		echo "export EXIST_HOME=/home/vagrant/latest-eXist" >> /home/vagrant/.zprofile
+	fi
+	source /home/vagrant/.zprofile
+	echo "JAVA_HOME is set to: $JAVA_HOME"
+	echo "EXIST_HOME is set to: $EXIST_HOME"
+	
+	sh /vagrant/requirements/eXist-config/run-config.sh
 fi
-sudo service exist-db start
+sudo service existdb start
 
 # Set the apache user's uid to mirror that of the user who owns the tapas/ 
 # nfs mounted directory.  Sorts out permissions well enough for the sake of 
