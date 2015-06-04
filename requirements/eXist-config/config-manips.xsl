@@ -44,9 +44,7 @@
       </xsl:copy>
     </xsl:variable>
     
-    <xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
-    <xsl:copy-of select="$escapedNode"/>
-    <xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
+    <xsl:comment><xsl:copy-of select="$escapedNode"/></xsl:comment>
   </xsl:template>
   
   <!-- Remove some XML from a comment. -->
