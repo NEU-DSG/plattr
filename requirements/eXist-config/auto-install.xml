@@ -27,7 +27,7 @@
     <pack index="7" name="doc" selected="true"/>
     <pack index="8" name="eXide" selected="false"/>
     <pack index="9" name="fundocs" selected="true"/>
-    <pack index="10" name="markdown" selected="false"/>
+    <pack index="10" name="markdown" selected="true"/> <!-- Keep selected if you want to use "fundocs". -->
     <pack index="11" name="monex" selected="true"/>
     <pack index="12" name="xqjson" selected="true"/>
     <pack index="13" name="xsltforms" selected="false"/>

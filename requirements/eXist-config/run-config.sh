@@ -22,6 +22,11 @@ if [ $new_port != "8080" ]; then
   echo "Configuring eXist to use port $new_port"
   mv $EXIST_HOME/tools/jetty/etc/jetty.xml $EXIST_HOME/tools/jetty/etc/jetty.xml.orig
   sed "s/8080/$new_port/g" $EXIST_HOME/tools/jetty/etc/jetty.xml.orig > $EXIST_HOME/tools/jetty/etc/jetty.xml
+  # Use updated port numbers for the Java Admin Client.
+  sed -E "s/8080/$new_port/g" $EXIST_HOME/client.properties.tmpl > $EXIST_HOME/client.properties
+  # Use updated port numbers for backups.
+  mv $EXIST_HOME/backup.properties $EXIST_HOME/backup.properties.tmpl
+  sed -E "s/8080/$new_port/g" $EXIST_HOME/backup.properties.tmpl > $EXIST_HOME/backup.properties
 fi
 echo "Running configuration stylesheets"
 # Configure startup and database options.
