@@ -56,7 +56,7 @@ sudo chown -R vagrant /var/www/html
 echo "export PATH=\$PATH:/home/vagrant/.composer/vendor/bin" >> /home/vagrant/.bashrc
 # buildtapas script places the site in the directory it is executed from
 cd /var/www/html
-curl -O https://raw.githubusercontent.com/neu-dsg/buildtapas/master/buildtapas.sh
+curl -O https://raw.githubusercontent.com/neu-dsg/buildtapas/develop/buildtapas.sh
 sed -i.bak 's/8080/3306/g' buildtapas.sh
 /bin/bash --login /var/www/html/buildtapas.sh "root" "" "tapas_drupal" "drupaldb" "drupaldb"
 
