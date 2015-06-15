@@ -31,6 +31,8 @@ sudo yum install mysql-devel-5.1.73-3.el6_5.x86_64 --assumeyes
 sudo yum install nodejs --assumeyes
 sudo yum install htop --assumeyes
 sudo yum install gcc gettext-devel expat-devel curl-devel zlib-devel openssl-devel perl-ExtUtils-CBuilder perl-ExtUtils-MakeMaker --assumeyes
+sudo yum install httpd-devel --assumeyes 
+sudo yum install curl-devel --assumeyes
 
 # PHP Drupal Package dependencies 
 sudo yum install php-5.4.38 --assumeyes
@@ -84,6 +86,15 @@ if ! rvm --version &>1 >/dev/null; then
   source /home/vagrant/.rvm/scripts/rvm
 fi 
 
+# Install passenger as a global gem 
+rvm use ruby-2.0.0-p481
+chmod o+x /home/vagrant
+gem install passenger
+passenger-install-apache2-module --auto
+sudo cp -f /vagrant/requirements/httpd.conf /etc/httpd/conf/httpd.conf
+echo "127.0.0.1   rails_api.localhost" | sudo tee -a /etc/hosts
+echo "127.0.0.1   drupal.localhost" | sudo tee -a /etc/hosts
+
 if [ ! -f "/usr/local/bin/composer" ]; then 
   echo "Installing composer"
   curl -sS https://getcomposer.org/installer | php 
@@ -126,3 +137,5 @@ if ! composer global show -i | grep -q "d11wtq/boris"; then
   cp /vagrant/borisrc_base /home/vagrant/.borisrc
 fi
 
+echo "Fixing .zshrc file" 
+cp -f /vagrant/requirements/zshrc /home/vagrant/.zshrc
