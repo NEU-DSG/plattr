@@ -17,12 +17,18 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Custom configuration goes here.
   if File.exists?("requirements/local/vagrant_conf.yml")
     custom_config = YAML.load_file(File.open("requirements/local/vagrant_conf.yml"))
+
+    unless custom_config.is_a? Hash 
+      raise "YAML parser returned a #{custom_config.class} instead of a Hash - "\
+        "This likely means that your YAML config is invalid"
+    end
   else
     custom_config = {} 
   end
 
   # Apply defaults 
   custom_config["tapas_rails_directory"] ||= "~/tapas_rails"
+  custom_config["drupal_share_directory"] ||= "~/tapas-drupal"
 
   # Caches yum packages to cut down on install time after the first 
   # build.  Note that cached packages will be reused for any other 
@@ -71,6 +77,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
   config.vm.synced_folder custom_config["tapas_rails_directory"], "/home/vagrant/tapas_rails", nfs: true 
+  config.vm.synced_folder custom_config["drupal_share_directory"], "/var/www/html", nfs: true
   config.vm.synced_folder ".", "/vagrant", :type => "nfs"
 
   config.vm.network "private_network", ip: "192.168.3.6"
