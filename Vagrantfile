@@ -16,7 +16,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # Custom configuration goes here.
   if File.exists?("requirements/local/vagrant_conf.yml")
-    custom_config = YAML.load(File.open("requirements/local/vagrant_conf.yml"))
+    custom_config = YAML.load_file(File.open("requirements/local/vagrant_conf.yml"))
   else
     custom_config = {} 
   end
