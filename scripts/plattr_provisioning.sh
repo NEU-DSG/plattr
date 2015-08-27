@@ -14,6 +14,7 @@ cd /home/vagrant/tapas_rails
 gem install bundler 
 bundle install 
 rake db:migrate
+thor tapas_rails:create_api_user
 
 # rails g hydra:jetty attempts to wget down a zipfile from 
 # Github containing the entire tapas/jetty directory - because 
