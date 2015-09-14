@@ -21,6 +21,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Default value: false
   config.ssh.forward_agent = true 
 
+  config.ssh.insert_key = false
+
   config.vm.provider :virtualbox do |vb|
     vb.customize ["modifyvm", :id, "--memory", '5734']
     vb.customize ["modifyvm", :id, "--ioapic", 'on']
