@@ -27,6 +27,7 @@ sudo yum install redis-2.4.10-1.el6.x86_64 --assumeyes
 sudo yum install libreoffice-headless-4.2.8.2-11.el6.x86_64 --assumeyes
 sudo yum install unzip-6.0-1.el6.x86_64 --assumeyes
 sudo yum install zsh-4.3.11-4.el6.centos.x86_64 --assumeyes
+sudo yum install mysql-server-5.5.45-1.el6.remi.x86_64 --assumeyes
 sudo yum install mysql-devel-5.5.45-1.el6.remi.x86_64 --assumeyes
 sudo yum install nodejs --assumeyes
 sudo yum install htop --assumeyes
@@ -40,7 +41,6 @@ sudo yum install php-pdo --assumeyes
 sudo yum install php-xml --assumeyes 
 sudo yum install php-pecl-memcached --assumeyes 
 sudo yum install php-pecl-apc --assumeyes 
-sudo yum install mysql-server --assumeyes 
 sudo yum install memcached --assumeyes 
 sudo yum install php-posix --assumeyes
 sudo yum install php-gd --assumeyes 
