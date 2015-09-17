@@ -37,6 +37,7 @@ sudo yum install curl-devel --assumeyes
 
 # PHP Drupal Package dependencies 
 sudo yum install php-5.4.38 --assumeyes
+sudo yum install mod_php --assumeyes
 sudo yum install php-pdo --assumeyes 
 sudo yum install php-xml --assumeyes 
 sudo yum install php-pecl-memcached --assumeyes 
@@ -84,15 +85,6 @@ if ! rvm --version &>1 >/dev/null; then
   rvm --default use ruby-2.0.0-p481
   source /home/vagrant/.rvm/scripts/rvm
 fi 
-
-# Install passenger as a global gem 
-rvm use ruby-2.0.0-p481
-chmod o+x /home/vagrant
-gem install passenger -v 5.0.15
-passenger-install-apache2-module --auto
-sudo cp -f /vagrant/requirements/httpd.conf /etc/httpd/conf/httpd.conf
-echo "127.0.0.1   rails_api.localhost" | sudo tee -a /etc/hosts
-echo "127.0.0.1   drupal.localhost" | sudo tee -a /etc/hosts
 
 if [ ! -f "/usr/local/bin/composer" ]; then 
   echo "Installing composer"
