@@ -16,6 +16,18 @@ bundle install
 rake db:migrate
 thor tapas_rails:create_api_user
 
+# Fix firewall rules
+sudo iptables -I INPUT -p tcp --dport 8080 -j ACCEPT 
+sudo iptables -I INPUT -p tcp --dport 8868 -j ACCEPT
+sudo iptables -I INPUT -p tcp --dport 8983 -j ACCEPT 
+sudo /sbin/service iptables save
+
+# Install Phusion Passenger
+chmod o+x /home/vagrant 
+bundle exec passenger-install-apache2-module --auto 
+sudo cp -f /vagrant/requirements/httpd.conf /etc/httpd/conf/httpd.conf 
+echo "127.0.0.1   rails_api.localhost drupal.localhost" | sudo tee -a /etc/hosts
+
 # rails g hydra:jetty attempts to wget down a zipfile from 
 # Github containing the entire tapas/jetty directory - because 
 # we are version locked to an old version of jetty and because 
