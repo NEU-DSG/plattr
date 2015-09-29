@@ -8,7 +8,7 @@ ENV['VAGRANT_DEFAULT_PROVIDER'] = 'virtualbox'
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config| 
 
   # Every Vagrant virtual environment requires a box to build off of.
-  config.vm.box = "chef/centos-6.5" 
+  config.vm.box = "nrel/CentOS-6.5-x86_64"
 
   # Caches yum packages to cut down on install time after the first 
   # build.  Note that cached packages will be reused for any other 
@@ -20,6 +20,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # If true, then any SSH connections made will enable agent forward.
   # Default value: false
   config.ssh.forward_agent = true 
+
+  config.ssh.insert_key = false
 
   config.vm.provider :virtualbox do |vb|
     vb.customize ["modifyvm", :id, "--memory", '5734']

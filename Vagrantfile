@@ -37,9 +37,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     config.cache.scope = :box
   end
 
-  # Forward default rails development server port
-  config.vm.network :forwarded_port, guest: 3000, host: 3003, auto_correct: true
-
   # Forward 8080, which Apache is listening on (serves drupal site)
   config.vm.network :forwarded_port, guest: 8080, host: 8080, auto_correct: true 
 
@@ -52,6 +49,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # If true, then any SSH connections made will enable agent forward.
   # Default value: false
   config.ssh.forward_agent = true 
+
+  # Don't attempt to insert a secure keypair
+  config.ssh.insert_key = false
 
   # Optimizations for vmware_fusion machines
   config.vm.provider "vmware_fusion" do |vm|
@@ -76,7 +76,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     s.args = ["#{ENV['USER_ID']}"]
   end
 
-  config.vm.synced_folder custom_config["tapas_rails_directory"], "/home/vagrant/tapas_rails", nfs: true 
+  config.vm.synced_folder custom_config["tapas_rails_directory"], "/home/vagrant/tapas_rails", nfs: true
   config.vm.synced_folder custom_config["drupal_share_directory"], "/var/www/html", nfs: true
   config.vm.synced_folder ".", "/vagrant", :type => "nfs"
 

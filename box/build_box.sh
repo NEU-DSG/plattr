@@ -18,16 +18,17 @@ fi
 echo "Installing package dependencies"
 sudo yum install java-1.8.0 --assumeyes
 sudo yum install httpd-2.2.15 --assumeyes
-sudo yum install file-devel-5.04-15.el6.x86_64 --assumeyes
-sudo yum install file-libs-5.04-15.el6.x86_64 --assumeyes
+sudo yum install file-devel-5.04-21.el6.x86_64 --assumeyes
+sudo yum install file-libs-5.04-21.el6.x86_64 --assumeyes
 sudo yum install sqlite-devel-3.6.20-1.el6.x86_64 --assumeyes
-sudo yum install ghostscript-8.70-19.el6.x86_64 --assumeyes
-sudo yum install ImageMagick-devel-6.5.4.7-7.el6_5.x86_64 --assumeyes
+sudo yum install ghostscript-8.70-21.el6.x86_64 --assumeyes
+sudo yum install ImageMagick-devel-6.7.2.7-2.el6.x86_64 --assumeyes
 sudo yum install redis-2.4.10-1.el6.x86_64 --assumeyes
-sudo yum install libreoffice-headless-4.0.4.2-9.el6.x86_64 --assumeyes
+sudo yum install libreoffice-headless-4.2.8.2-11.el6.x86_64 --assumeyes
 sudo yum install unzip-6.0-1.el6.x86_64 --assumeyes
-sudo yum install zsh-4.3.10-7.el6.x86_64 --assumeyes
-sudo yum install mysql-devel-5.1.73-3.el6_5.x86_64 --assumeyes
+sudo yum install zsh-4.3.11-4.el6.centos.x86_64 --assumeyes
+sudo yum install mysql-server-5.5.45-1.el6.remi.x86_64 --assumeyes
+sudo yum install mysql-devel-5.5.45-1.el6.remi.x86_64 --assumeyes
 sudo yum install nodejs --assumeyes
 sudo yum install htop --assumeyes
 sudo yum install gcc gettext-devel expat-devel curl-devel zlib-devel openssl-devel perl-ExtUtils-CBuilder perl-ExtUtils-MakeMaker --assumeyes
@@ -41,7 +42,6 @@ sudo yum install php-pdo --assumeyes
 sudo yum install php-xml --assumeyes 
 sudo yum install php-pecl-memcached --assumeyes 
 sudo yum install php-pecl-apc --assumeyes 
-sudo yum install mysql-server --assumeyes 
 sudo yum install memcached --assumeyes 
 sudo yum install php-posix --assumeyes
 sudo yum install php-gd --assumeyes 
@@ -85,15 +85,6 @@ if ! rvm --version &>1 >/dev/null; then
   rvm --default use ruby-2.0.0-p481
   source /home/vagrant/.rvm/scripts/rvm
 fi 
-
-# Install passenger as a global gem 
-rvm use ruby-2.0.0-p481
-chmod o+x /home/vagrant
-gem install passenger
-passenger-install-apache2-module --auto
-sudo cp -f /vagrant/requirements/httpd.conf /etc/httpd/conf/httpd.conf
-echo "127.0.0.1   rails_api.localhost" | sudo tee -a /etc/hosts
-echo "127.0.0.1   drupal.localhost" | sudo tee -a /etc/hosts
 
 if [ ! -f "/usr/local/bin/composer" ]; then 
   echo "Installing composer"
