@@ -4,7 +4,7 @@
 # Update composer
 /usr/local/bin/composer self-update
 # Update drush
-composer global require drush/drush:dev-master
+composer global require "drush/drush:dev-master#e264dac550ae0705cc5b016f3cf9e73ea581777f"
 # Update boris-loader
 cd /home/vagrant/boris-loader
 git pull origin master 
@@ -72,6 +72,10 @@ cd /var/www/html
 curl -O https://raw.githubusercontent.com/neu-dsg/buildtapas/develop/buildtapas.sh
 sed -i.bak 's/8080/3306/g' buildtapas.sh
 /bin/bash --login /var/www/html/buildtapas.sh "root" "" "tapas_drupal" "drupaldb" "drupaldb"
+
+# Set the admin password to always be 'admin'
+cd /var/www/html
+drush upwd admin --password="admin"
 
 # We need to override the `AllowOverride None` on DocumentRoot (/var/www/html). 
 # The `Include conf.d/*.conf` line in httpd.conf occurs before the directive, 
