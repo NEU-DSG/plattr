@@ -30,6 +30,14 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   custom_config["tapas_rails_directory"] ||= "~/tapas_rails"
   custom_config["drupal_share_directory"] ||= "~/tapas-drupal"
 
+  # Set the branch of buildtapas (github.com/neu-dsg/buildtapas) to use when building
+  # the site.  Check command line arguments first, then the custom_config hash, then 
+  # default to develop.
+  tapas_branch = ENV['BUILDTAPAS_BRANCH'] || 
+    custom_config['buildtapas_branch'] || 
+    'develop'
+
+
   # Caches yum packages to cut down on install time after the first 
   # build.  Note that cached packages will be reused for any other 
   # chef/centos-6.5 boxes.
@@ -73,7 +81,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provision "shell" do |s| 
     s.path = "scripts/plattr_provisioning.sh"
     s.privileged = false
-    s.args = ["#{ENV['USER_ID']}"]
+    s.args = ["\"#{ENV['USER_ID']}\" \"#{tapas_branch}\""]
   end
 
   config.vm.synced_folder custom_config["tapas_rails_directory"], "/home/vagrant/tapas_rails", nfs: true
