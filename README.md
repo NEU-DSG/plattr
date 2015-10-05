@@ -16,6 +16,13 @@ Isn't fancy or interesting or even really a proper project.  It's just a Vagrant
 6. CD into the root directory of the project and run ``vagrant up``.  Be patient - installation takes time. 
 7. Type ``vagrant ssh`` and you should be ssh'd directly into the machine.  Since none of the components talk to each other (yet) this is everything you need to do.  Do note that the Rails server isn't actually running, and that if you need it for anything you'll need to go start it.  The tapas project should be accessible from your machine's browser at localhost:8080.
 
+## Startup options
+
+Passing environmental variables to the `vagrant up` command allows for configuration of the final build.  To do this, prepend the desired environmental variable to the command like so: `SOME_ENV=value vagrant up`.  
+
+Currently, there is only one supported option: 
+* BUILDTAPAS_BRANCH: Passing this to the script will alter which branch of the [buildtapas](https://github.com/neu-dsg/buildtapas) project is used to construct the site.  This currently defaults to the develop branch and can be set in your custom configuration options with the key 'buildtapas_branch.'  
+
 Then see http://github.com/NEU-DSG/tapas/wiki/Running-tapas,-tapas-rails,-and-eXist-in-the-development-environment
 
 ## Hungry for more TAPAS?
