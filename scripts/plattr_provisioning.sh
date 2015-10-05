@@ -1,6 +1,18 @@
 #!/usr/bin/env bash 
 /bin/bash --login
 
+# Before doing anything else, verify that the specified buildtapas branch 
+# exists on github and is accessible.
+branch=$2
+buildtapas_repo="https://github.com/neu-dsg/buildtapas.git"
+all_repos=$(git ls-remote -h $buildtapas_repo $branch)
+
+# This check ensures that we are getting an exact match on our branch
+if [[ $all_repos != *"refs/heads/$branch"* ]]; then
+  echo "There is no buildtapas branch on github named $branch" >&2
+  exit 1
+fi
+
 # Update composer
 /usr/local/bin/composer self-update
 # Update drush
@@ -69,7 +81,7 @@ sudo chown -R vagrant /var/www/html
 echo "export PATH=\$PATH:/home/vagrant/.composer/vendor/bin" >> /home/vagrant/.bashrc
 # buildtapas script places the site in the directory it is executed from
 cd /var/www/html
-curl -O https://raw.githubusercontent.com/neu-dsg/buildtapas/develop/buildtapas.sh
+curl -O https://raw.githubusercontent.com/neu-dsg/buildtapas/$branch/buildtapas.sh
 sed -i.bak 's/8080/3306/g' buildtapas.sh
 /bin/bash --login /var/www/html/buildtapas.sh "root" "" "tapas_drupal" "drupaldb" "drupaldb"
 

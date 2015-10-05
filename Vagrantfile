@@ -81,7 +81,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provision "shell" do |s| 
     s.path = "scripts/plattr_provisioning.sh"
     s.privileged = false
-    s.args = ["\"#{ENV['USER_ID']}\" \"#{tapas_branch}\""]
+    s.args = ["#{ENV['USER_ID']}", "#{tapas_branch}"]
   end
 
   config.vm.synced_folder custom_config["tapas_rails_directory"], "/home/vagrant/tapas_rails", nfs: true
