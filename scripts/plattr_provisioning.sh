@@ -179,6 +179,10 @@ sudo service existdb start
 sudo service httpd stop 
 sudo usermod -u $1 apache 
 
+# Copies in a version of my.cnf that has defaults that will work with Drupal
+sudo mv /etc/my.cnf /etc/my.cnf.bak 
+sudo cp -f /vagrant/requirements/my.cnf /etc/my.cnf 
+
 echo "Restarting necessary services"
 sudo service httpd restart
 sudo service memcached restart 
