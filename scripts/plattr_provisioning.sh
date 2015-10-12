@@ -183,6 +183,12 @@ sudo usermod -u $1 apache
 sudo mv /etc/my.cnf /etc/my.cnf.bak 
 sudo cp -f /vagrant/requirements/my.cnf /etc/my.cnf 
 
+# InnoDB logs on the base device are a different size than in the new cfg,
+# causing SQL to fail to start unless we remove them.
+
+sudo mv /var/lib/mysql/ib_logfile0 /var/lib/mysql/bak_ib_logfile0.bak
+sudo mv /var/lib/mysql/ib_logfile1 /var/lib/mysql/bak_ib_logfile1.bak
+
 echo "Restarting necessary services"
 sudo service httpd restart
 sudo service memcached restart 
