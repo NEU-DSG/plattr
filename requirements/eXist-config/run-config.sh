@@ -30,7 +30,7 @@ if [ $new_port != "8080" ]; then
 fi
 # Increase maximum form content size from 200000 to 600000.
 echo "Increasing maximum form content size"
-cp $DIR/jetty-web.xml $EXIST_HOME/webapps/WEB-INF/jetty-web.xml
+cp $DIR/jetty-web.xml $EXIST_HOME/webapp/WEB-INF/jetty-web.xml
 echo "Running configuration stylesheets"
 # Configure startup and database options.
 mv $EXIST_HOME/conf.xml $EXIST_HOME/conf.xml.orig
