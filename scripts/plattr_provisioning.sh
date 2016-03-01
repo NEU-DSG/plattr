@@ -79,15 +79,17 @@ sudo service redis start
 echo "Setting up tapas" 
 sudo chown -R vagrant /var/www/html 
 echo "export PATH=\$PATH:/home/vagrant/.composer/vendor/bin" >> /home/vagrant/.bashrc
-# buildtapas script places the site in the directory it is executed from
+# buildtapas script places the site in the directory it is executed from.
+# it requires stub.make to be in the same directory.
 cd /var/www/html
 curl -O https://raw.githubusercontent.com/neu-dsg/buildtapas/$branch/buildtapas.sh
+curl -O https://raw.githubusercontent.com/neu-dsg/buildtapas/$branch/stub.make
 sed -i.bak 's/8080/3306/g' buildtapas.sh
 /bin/bash --login /var/www/html/buildtapas.sh "root" "" "tapas_drupal" "drupaldb" "drupaldb"
 
 # Set the admin password to always be 'admin'
 cd /var/www/html
-drush upwd admin --password="admin"
+drush upwd --password="admin" admin
 
 # We need to override the `AllowOverride None` on DocumentRoot (/var/www/html). 
 # The `Include conf.d/*.conf` line in httpd.conf occurs before the directive, 
